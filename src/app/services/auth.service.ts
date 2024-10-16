@@ -53,4 +53,15 @@ export class AuthService {
     }
     return ''; // Retorna uma string vazia se não houver token
   }
+
+  // Envia email para o primeiro acesso
+  enviarEmailPrimeiroAcesso(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/primeiro-acesso?email=${encodeURIComponent(email)}`, {}, { responseType: 'text' })
+      .pipe(
+        catchError((error) => {
+          console.error('Falha ao enviar email de primeiro acesso', error);
+          return throwError(error);
+        })
+      );
+  }    
 }

@@ -9,14 +9,14 @@
           <form [formGroup]="formGroup" (ngSubmit)="onLogin()">
             <div class="mb-3">
               <label for="email">Usuário</label>
-              <input id="email" type="text" pInputText class="form-control" formControlName="email" />
+              <input id="email" type="text" pInputText class="form-control" placeholder="Email" formControlName="email" />
             </div>
             <div class="mb-3">
               <label for="senha">Senha</label>
-              <input id="senha" type="password" pInputText class="form-control" formControlName="senha" />
+              <input id="senha" type="password" pInputText class="form-control" placeholder="Senha" formControlName="senha" />
             </div>
             <p class="mb-3 link">
-              <a href="#" class="text-info">Esqueci minha senha</a>
+              <a href="auth/register" class="text-info">Primeiro Acesso</a>
             </p>
             <div class="mb-3 botao">
               <button type="submit" class="btn btn-success" [disabled]="formGroup.invalid">Entrar</button>

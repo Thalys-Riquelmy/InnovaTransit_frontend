@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component'; 
 import { AuthGuard } from './guard/auth.guard';
+import { RegisterComponent } from './auth/register/register.component';
 
 
 const routes: Routes = [
     { path: 'auth/login', component: LoginComponent },
+    { path: 'auth/register', component: RegisterComponent},
     {
       path: 'motorista',
       loadChildren: () => import('./motorista-pages/motorista-pages.module').then(m => m.MotoristaPagesModule),

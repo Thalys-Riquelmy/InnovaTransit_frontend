@@ -1,0 +1,37 @@
+/* styles.css */
+.card {
+    background-color: rgb(161, 252, 221);
+    padding: 20px;
+    max-width: 900px; /* Defina a largura máxima do card para um tamanho apropriado */
+    margin: 0 auto; /* Centraliza o card horizontalmente */
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Altura mínima de 100% da altura da tela */
+}
+
+.form-label {
+    display: block; /* Garante que o rótulo fique em bloco e ocupe toda a largura disponível */
+    margin-bottom: 0.5rem; /* Espaço abaixo do rótulo */
+}
+
+.header {
+    align-items: center;
+    text-align: center;
+    margin-bottom: 15px;
+    margin-top: 20px;
+}
+
+.link{
+    text-align: left;
+}
+
+.botao{
+    margin-top: 10px;
+    margin-bottom: 25px;
+    align-items: center;
+    text-align: center;
+}

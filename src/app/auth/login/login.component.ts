@@ -36,7 +36,7 @@ export class LoginComponent {
   
           // Redireciona o usuário baseado na role
           if (role === 'ROLE_GERENTE') {
-            this.router.navigate(['/gerente/dashboard']); // Exemplo de redirecionamento para gerente
+            this.router.navigate(['/gerente']); // Exemplo de redirecionamento para gerente
           } else if (role === 'ROLE_MOTORISTA') {
             this.router.navigate(['/motorista']); // Exemplo de redirecionamento para motorista
           } else {
