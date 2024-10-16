@@ -1,0 +1,33 @@
+<div class="flex">
+    <div class="card">
+      <div class="row">
+        <div class="header">
+          <h3><i class="pi pi-user" style="font-size: 3.0rem"></i></h3>
+          <h3>InnovaTransit</h3>
+        </div>
+        <div class="col-12 col-md-8 offset-md-2">
+          <form [formGroup]="formGroup" (ngSubmit)="onLogin()">
+            <div class="mb-3">
+              <label for="email">Usuário</label>
+              <input id="email" type="text" pInputText class="form-control" formControlName="email" />
+            </div>
+            <div class="mb-3">
+              <label for="senha">Senha</label>
+              <input id="senha" type="password" pInputText class="form-control" formControlName="senha" />
+            </div>
+            <p class="mb-3 link">
+              <a href="#" class="text-info">Esqueci minha senha</a>
+            </p>
+            <div class="mb-3 botao">
+              <button type="submit" class="btn btn-success" [disabled]="formGroup.invalid">Entrar</button>
+            </div>
+            <!-- Exibe a mensagem de erro -->
+            <div *ngIf="errorMessage" style="color: red;">
+                {{ errorMessage }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
