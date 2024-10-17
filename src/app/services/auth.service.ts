@@ -64,4 +64,18 @@ export class AuthService {
         })
       );
   }    
+
+  // Método para alterar a senha
+  alterarSenha(email: string, senha: string): Observable<any> {
+    const url = `${this.apiUrl}/auth/altera-senha`;
+    const body = { email, senha }; // Cria um objeto com email e senha
+
+    return this.http.post(url, body, { responseType: 'text' }) // Requisição PUT com corpo
+      .pipe(
+        catchError((error) => {
+          console.error('Erro ao alterar a senha', error);
+          return throwError(error); // Retorna o erro
+        })
+      );
+  }
 }

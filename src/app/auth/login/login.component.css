@@ -35,3 +35,15 @@
     align-items: center;
     text-align: center;
 }
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Centraliza os botões horizontalmente */
+    gap: 10px; /* Espaçamento entre os botões */
+    width: 100%; /* Para que ocupe toda a largura do contêiner pai */
+  }
+  
+  .button-container button {
+    flex: 1; /* Faz os botões ocuparem o mesmo espaço */
+  }
+  

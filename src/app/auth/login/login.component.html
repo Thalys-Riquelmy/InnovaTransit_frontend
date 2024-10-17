@@ -1,33 +1,91 @@
-<div class="flex">
-    <div class="card">
-      <div class="row">
-        <div class="header">
-          <h3><i class="pi pi-user" style="font-size: 3.0rem"></i></h3>
-          <h3>InnovaTransit</h3>
-        </div>
-        <div class="col-12 col-md-8 offset-md-2">
-          <form [formGroup]="formGroup" (ngSubmit)="onLogin()">
-            <div class="mb-3">
-              <label for="email">Usuário</label>
-              <input id="email" type="text" pInputText class="form-control" placeholder="Email" formControlName="email" />
+<div class="flex" [hidden]="isFirstAccess || isChangingPassword"> 
+  <div class="card">
+    <div class="row">
+      <div class="header">
+        <h3><i class="pi pi-user" style="font-size: 3.0rem"></i></h3>
+        <h3>InnovaTransit</h3>
+      </div>
+      <div class="col-12 col-md-8 offset-md-2">
+        <form [formGroup]="formGroup" (ngSubmit)="onLogin()">
+          <div class="mb-3">
+            <label for="email">Usuário</label>
+            <input id="email" type="text" pInputText class="form-control" placeholder="Email" formControlName="email"/>
+            <div *ngIf="formGroup.get('email')?.touched && formGroup.get('email')?.invalid" style="color: red;">
+              O campo Usuário é obrigatório.
             </div>
-            <div class="mb-3">
-              <label for="senha">Senha</label>
-              <input id="senha" type="password" pInputText class="form-control" placeholder="Senha" formControlName="senha" />
+          </div>
+          <div class="mb-3">
+            <label for="senha">Senha</label>
+            <input id="senha" type="password" pInputText class="form-control" placeholder="Senha" formControlName="senha" />
+            <div *ngIf="formGroup.get('senha')?.touched && formGroup.get('senha')?.invalid" style="color: red;">
+              O campo Senha é obrigatório.
             </div>
-            <p class="mb-3 link">
-              <a href="auth/register" class="text-info">Primeiro Acesso</a>
-            </p>
-            <div class="mb-3 botao">
-              <button type="submit" class="btn btn-success" [disabled]="formGroup.invalid">Entrar</button>
-            </div>
-            <!-- Exibe a mensagem de erro -->
-            <div *ngIf="errorMessage" style="color: red;">
-                {{ errorMessage }}
-            </div>
-          </form>
-        </div>
+          </div>
+          <a href="#" (click)="onFirstAccess(); $event.preventDefault();" role="button">Primeiro Acesso</a>
+          <div class="mb-3 button-container" style="margin-top: 8px;">
+            <button type="submit" class="btn btn-primary" [disabled]="formGroup.invalid">Acessar</button>
+          </div> 
+          <div *ngIf="errorMessage" style="color: red;">
+            {{ errorMessage }}
+          </div>
+        </form>
       </div>
     </div>
   </div>
-  
+</div>
+
+<div class="flex" [hidden]="!isFirstAccess || isChangingPassword"> <!-- Exibe se estiver em primeiro acesso -->
+  <div class="card">
+    <div class="row">
+      <div class="header">
+        <h3><i class="pi pi-user" style="font-size: 3.0rem"></i></h3>
+        <h3>InnovaTransit</h3>
+      </div>
+      <div class="col-12 col-md-8 offset-md-2">
+        <form [formGroup]="primeiroAcessoForm" (ngSubmit)="enviarEmail()">
+          <div class="mb-3">
+            <label for="email">Usuário</label>
+            <input id="email" type="text" pInputText class="form-control" formControlName="email" required />
+            <div *ngIf="primeiroAcessoForm.get('email')?.touched && primeiroAcessoForm.get('email')?.invalid" style="color: red;">
+              O campo Usuário é obrigatório.
+            </div>
+          </div>
+          <div class="mb-3 button-container">
+            <button type="submit" class="btn btn-primary" [disabled]="primeiroAcessoForm.invalid">Enviar</button>
+            <button type="button" class="btn btn-danger" (click)="cancelar()">Cancelar</button>
+          </div> 
+          <div *ngIf="mensagem" style="color: red;">
+            {{ mensagem }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex" [hidden]="!isChangingPassword"> <!-- Exibe se isChangingPassword é true -->
+  <div class="card">
+    <div class="row">
+      <div class="header">
+        <h3><i class="pi pi-user" style="font-size: 3.0rem"></i></h3>
+        <h3>InnovaTransit</h3>
+      </div>
+      <div class="col-12 col-md-8 offset-md-2">
+        <form [formGroup]="AlteraSenhaForm" (ngSubmit)="alterarSenha()">
+          <div class="mb-3">
+            <label>Nova Senha</label>
+            <input type="password" pInputText class="form-control" formControlName="senha" placeholder="Informe a Nova Senha"/>
+          </div>
+          <div class="mb-3">
+            <label>Confirme a Senha</label>
+            <input type="password" pInputText class="form-control" formControlName="confirmaSenha" placeholder="Confirme a Nova Senha"/>
+          </div>
+          <div class="mb-3 button-container">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button type="button" class="btn btn-danger" (click)="cancelar()">Cancelar</button>
+          </div>          
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
