@@ -1,0 +1,7 @@
+{
+  "name": "FTInnovaIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
