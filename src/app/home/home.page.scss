@@ -24,4 +24,96 @@
 
 #container a {
   text-decoration: none;
+}.login-content {
+  display: flex;
+  justify-content: center;  // Centraliza horizontalmente
+  align-items: center;      // Centraliza verticalmente
+  height: 100vh;           // Usa 100% da altura da tela
+  background: linear-gradient(to right, #6a11cb, #2575fc); // Gradiente de fundo
+  padding: 0;              // Remove padding do ion-content
+}
+
+.login-container {
+  background: white;       // Fundo branco para o container
+  border-radius: 20px;     // Bordas arredondadas
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); // Sombra para o efeito de profundidade
+  padding: 40px;           // Padding interno
+  width: 100%;             // Usa 100% da largura disponível
+  max-width: 400px;        // Limita a largura máxima do container
+  text-align: center;      // Centraliza texto dentro do container
+}
+
+.login-title {
+  margin-bottom: 10px;     // Espaço abaixo do título
+  font-size: 24px;         // Tamanho da fonte do título
+  color: #333;             // Cor do texto do título
+}
+
+.login-subtitle {
+  margin-bottom: 20px;     // Espaço abaixo do subtítulo
+  font-size: 16px;         // Tamanho da fonte do subtítulo
+  color: #666;             // Cor do texto do subtítulo
+}
+
+.login-button {
+  margin-top: 15px;        // Espaço acima do botão
+  background-color: #6a11cb; // Cor do botão
+  color: white;            // Cor do texto do botão
+  transition: background-color 0.3s; // Transição suave ao passar o mouse
+}
+
+.login-button:hover {
+  background-color: #2575fc; // Cor do botão ao passar o mouse
+}
+
+.login-footer {
+  margin-top: 20px;        // Espaço acima do rodapé
+}
+
+.login-footer p {
+  margin: 5px 0;           // Espaçamento entre os parágrafos do rodapé
+  font-size: 14px;         // Tamanho da fonte do rodapé
+}
+
+.login-footer a {
+  color: #6a11cb;          // Cor dos links
+  text-decoration: underline; // Sublinhado nos links
+}
+
+.login-content {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+  min-height: 100vh; /* Garante que ocupa toda a altura da tela */
+}
+
+.login-container {
+  width: 100%; /* Para garantir que o container ocupe toda a largura disponível */
+  max-width: 400px; /* Define uma largura máxima */
+  margin: 0 auto; /* Centraliza o container horizontalmente */
+  padding: 20px; /* Espaçamento interno */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Um leve sombreamento para um toque de classe */
+  border-radius: 8px; /* Arredonda os cantos */
+}
+
+.login-title, .login-subtitle {
+  text-align: center; /* Centraliza o texto */
+}
+
+.login-content {
+  background-color: #f0f0f0; /* Substitua pela cor desejada */
+  height: 100vh; /* Garante que a div ocupe toda a altura da tela */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-content {
+  background-image: url('../../assets/icon/estrada-ensolarada.jpg'); /* Substitua pelo caminho da sua imagem */
+  background-size: cover; /* Faz a imagem cobrir toda a área */
+  background-position: center; /* Centraliza a imagem */
+  height: 100vh; /* Garante que a div ocupe toda a altura da tela */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

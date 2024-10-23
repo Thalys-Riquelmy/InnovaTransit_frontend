@@ -1,0 +1,63 @@
+<div class="flex" [hidden]="isFirstAccess || isChangingPassword">
+  <div class="login-content">
+    <div class="login-container">
+      <h2 class="login-title">Bem-vindo!</h2>
+      <p class="login-subtitle">InnovaTransit Login</p>
+      <form class="login-form" [formGroup]="formGroup" (ngSubmit)="onLogin()">
+        <ion-item>
+          <ion-input label="Usuário" labelPlacement="floating" placeholder="Email" formControlName="email"></ion-input>
+        </ion-item>
+      
+        <ion-item>
+          <ion-input label="Senha" labelPlacement="floating" type="password" placeholder="Senha" formControlName="senha"></ion-input>
+        </ion-item>
+
+        <ion-button expand="full" type="ngSubmit" class="login-button">Entrar</ion-button>
+
+        <div class="login-footer">
+          <p>
+            Não tem uma conta? <a href="#" (click)="onFirstAccess(); $event.preventDefault();" role="button">Primeiro Acesso</a>
+          </p>
+          <p>
+            <a href="/forgot-password">Esqueceu a senha?</a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="flex" [hidden]="!isFirstAccess || isChangingPassword">
+  <div class="login-content">
+    <div class="login-container">
+      <h2 class="login-title">InnovaTransit</h2>
+      <p class="login-subtitle">Primeiro Acesso</p>
+      <form class="login-form" [formGroup]="primeiroAcessoForm" (ngSubmit)="enviarEmail()">
+        <ion-item>
+          <ion-input label="Usuário" labelPlacement="floating" placeholder="Email" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-button expand="full" type="ngSubmit" class="login-button">Enviar</ion-button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="flex" [hidden]="!isChangingPassword">
+  <div class="login-content">
+    <div class="login-container">
+      <h2 class="login-title">InnovaTransit</h2>
+      <p class="login-subtitle">Alterar Senha</p>
+      <form class="login-form" [formGroup]="alteraSenhaForm" (ngSubmit)="alterarSenha()">
+        <ion-item>
+          <ion-input label="Nova Senha" labelPlacement="floating" type="password" placeholder="Nova Senha" formControlName="senha"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-input label="Confirme a Senha" labelPlacement="floating" type="password" placeholder="Confirme a Senha" formControlName="confirmaSenha"></ion-input>
+        </ion-item>
+
+        <ion-button expand="full" type="ngSubmit" class="login-button">Confirmar</ion-button>
+      </form>
+    </div>
+  </div>
+</div>

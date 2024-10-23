@@ -1,0 +1,93 @@
+<ion-menu side="start" menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>InnovaTransit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item button [routerLink]="['/motorista/iniciar-jornada']">
+        Iniciar Jornada
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/iniciar-tarefa']">
+        Iniciar Tarefa
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/finalizar-tarefa']">
+        Finalizar Tarefa
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/estornar-tarefa']">
+        Estornar Tarefa
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/exibir-viagens']">
+        Exibir Viagens
+      </ion-item>
+      <ion-item button [routerLink]="['/auth/login']">
+        Sair
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Innova Transit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <form [formGroup]="formGroup">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Veiculo:" formControlName="numeroVeiculo" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Hora Início:" formControlName="horaInicial" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Hora Final:" formControlName="horaFinal" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Mat.:" formControlName="matricula" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Folha Serviço:" formControlName="id" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="12" size-sm="9"><ion-item>
+          <ion-input label="Nome:" formControlName="nome" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="3" size-sm="2">
+          <ion-input label="Cód" label-placement="floating" fill="solid" formControlName="codTarefa" placeholder="Código"></ion-input>
+        </ion-col>
+        <ion-col size="3" size-sm="2">
+          <ion-input label="Início" label-placement="floating" fill="solid" formControlName="horarioInicio"></ion-input>
+        </ion-col>
+        <ion-col size="3" size-sm="2">
+          <ion-input label="Fim" label-placement="floating" fill="solid" formControlName="horarioFim"></ion-input>
+        </ion-col>
+        <ion-col size="3" size-sm="2">
+          <ion-input label="Iniciar" label-placement="floating" fill="solid" formControlName="horaInicio"></ion-input>
+        </ion-col>
+        <ion-col size="12" size-sm="4">
+          <ion-input label="Evento" label-placement="floating" fill="solid" formControlName="evento" placeholder="Evento"></ion-input>
+        </ion-col>
+        <ion-col size="12" size-sm="12" style="display: flex; justify-content: center; align-items: center; margin-top: 30px;">
+          <ion-button color="primary" [routerLink]="['/motorista/folha-servico']">Voltar</ion-button>
+          <ion-button color="primary" (click)="iniciarEvento()">Iniciar Evento</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+  <ion-toast
+    [isOpen]="showToast"
+    position="top"
+    [message]="toastMessage"
+    duration="3000"
+    (didDismiss)="showToast = false">
+  </ion-toast>
+  </ion-content>
+</div>

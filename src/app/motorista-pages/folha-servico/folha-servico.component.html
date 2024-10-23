@@ -1,0 +1,89 @@
+<ion-menu side="start" menuId="main-menu" contentId="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>InnovaTransit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item button [routerLink]="['/motorista/iniciar-jornada']">
+        Iniciar Jornada
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/iniciar-tarefa']">
+        Iniciar Tarefa
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/finalizar-tarefa']">
+        Finalizar Tarefa
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/estornar-tarefa']">
+        Estornar Tarefa
+      </ion-item>
+      <ion-item button [routerLink]="['/motorista/exibir-viagens']">
+        Exibir Viagens
+      </ion-item>
+      <ion-item button [routerLink]="['/auth/login']">
+        Sair
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Innova Transit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <form [formGroup]="formGroup">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Veiculo:" formControlName="numeroVeiculo" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Hora Início:" formControlName="horaInicial" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Hora Final:" formControlName="horaFinal" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Mat.:" formControlName="matricula" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="6" size-sm="3"><ion-item>
+          <ion-input label="Folha Serviço:" formControlName="id" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+        <ion-col size="12" size-sm="9"><ion-item>
+          <ion-input label="Nome:" formControlName="nome" [readonly]="true"></ion-input>
+        </ion-item></ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Evento</th>
+            <th>Início</th>
+            <th>Fim</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarefa of listaDeTarefas">
+            <td>{{ tarefa.id }}</td>
+            <td>{{ tarefa.evento }}</td>
+            <td>{{ tarefa.horarioInicio }}</td>
+            <td>{{ tarefa.horarioFim }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+  </form>
+  </ion-content>
+</div>
