@@ -16,7 +16,7 @@ import { AuthService } from 'src/app/services/auth.service';
     IonRow, IonCol, IonCardTitle, IonHeader, IonToolbar, IonTitle, IonContent, HttpClientModule, ReactiveFormsModule
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   //Injeções 
   authService = inject (AuthService);
@@ -52,9 +52,9 @@ export class LoginComponent {
     })
   }
 
-  /*ngOnInit(): void {
+  ngOnInit(): void {
     this.authService.clearStorage(); // Limpa o localStorage ao carregar a tela de login
-  }*/
+  }
   
   async onLogin() {
     if (this.formGroup.valid) {

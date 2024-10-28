@@ -19,4 +19,23 @@ export class FolhaServicoService {
 
     return this.http.get<FolhaServico>(`${this.apiUrl}/obter-por-matricula-e-data`, { params });
   }
+
+  // Método para iniciar a folha de serviço
+  iniciarFolhaDeServico(id: number, horaInicial: string): Observable<any> {
+    // Criar o corpo da requisição
+    const body = {
+      id: id,
+      horaInicial: horaInicial  // Formato de tempo ISO (hh:mm:ss)
+    };
+    // Fazer a requisição POST ao backend com o corpo
+    return this.http.post(`${this.apiUrl}/iniciar`, body);
+  } 
+
+  finalizarFolhaDeServico(id: number, horaFim: string){
+    const body = {
+      id: id,
+      horaFim: horaFim
+    }
+    return this.http.post(`${this.apiUrl}/finalizar`, body);
+  }
 }

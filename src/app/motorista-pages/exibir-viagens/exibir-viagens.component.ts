@@ -145,66 +145,6 @@ export class ExibirViagensComponent {
     }
   }
   
-  gerarPDF1() {
-    const doc = new jsPDF();
-  
-    // Título
-    doc.setFontSize(16); // Tamanho do título
-    const title = 'Relatório de Folha de Serviço';
-    const titleWidth = doc.getTextWidth(title);
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const titleX = (pageWidth - titleWidth) / 2; // Centraliza o título
-    doc.text(title, titleX, 15);
-  
-    // Definindo o tamanho da fonte para as informações do motorista
-    doc.setFontSize(10); // Tamanho da fonte menor para as informações
-  
-    // Subtítulo com informações do motorista e folha de serviço
-    const veiculo = `Veículo: ${this.formGroup.get('numeroVeiculo')?.value}`;
-    const horaInicial = `Hora Inicial: ${this.formGroup.get('horaInicial')?.value}`;
-    const horaFinal = `Hora Final: ${this.formGroup.get('horaFinal')?.value}`;
-    const matricula = `Matrícula: ${this.formGroup.get('matricula')?.value}`;
-    const folhaServico = `Folha Serviço: ${this.formGroup.get('id')?.value}`;
-    const nome = `Nome: ${this.formGroup.get('nome')?.value}`;
-  
-    // Ajustando o espaçamento entre as informações
-    const lineHeight = 5; // Espaçamento reduzido entre as linhas
-    doc.text(veiculo, 14, 25);
-    doc.text(horaInicial, 100, 25);  // Posiciona na mesma linha
-    doc.text(horaFinal, 14, 30); // Nova linha
-    doc.text(matricula, 100, 30); // Nova linha
-    doc.text(folhaServico, 14, 35); // Nova linha
-    doc.text(nome, 100, 35); // Nova linha
-  
-    // Tabela de Tarefas
-    const head = [['Evento', 'Início Programado', 'Fim Programado', 'Início Real', 'Fim Real']];
-    const body = this.listaDeTarefas.map(tarefa => [
-      tarefa.evento,
-      tarefa.horarioInicio,
-      tarefa.horarioFim,
-      tarefa.horaInicio,
-      tarefa.horaFim
-    ]);
-  
-    (doc as any).autoTable({
-      head: head,
-      body: body,
-      startY: 45,  // Posição inicial da tabela ajustada para o novo espaçamento
-      styles: { fontSize: 10 },  // Fonte para a tabela
-      headStyles: { fillColor: [22, 160, 133] },  // Estilo do cabeçalho
-      margin: { top: 10 }  // Margem da tabela
-    });
-  
-    // Adicionando Assinatura Eletrônica no rodapé
-    const footerY = doc.internal.pageSize.getHeight() - 20; // Posição do rodapé a 20mm do fundo
-    doc.setFontSize(8); // Tamanho da fonte do rodapé
-    doc.text('Assinatura Eletrônica', 14, footerY);
-    doc.text('Nome do Usuário', 14, footerY + 5); // Nome do usuário na linha de baixo
-  
-    // Salvar PDF
-    doc.save('folha_servico.pdf');
-  }  
-  
   gerarPDF() {
     const doc = new jsPDF();
     // Título

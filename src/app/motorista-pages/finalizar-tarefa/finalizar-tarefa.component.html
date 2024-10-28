@@ -15,9 +15,6 @@
       <ion-item button [routerLink]="['/motorista/finalizar-tarefa']">
         Finalizar Tarefa
       </ion-item>
-      <ion-item button [routerLink]="['/motorista/estornar-tarefa']">
-        Estornar Tarefa
-      </ion-item>
       <ion-item button [routerLink]="['/motorista/exibir-viagens']">
         Exibir Viagens
       </ion-item>
@@ -82,12 +79,61 @@
           <ion-input label="Evento" label-placement="floating" fill="solid" formControlName="evento" placeholder="Evento" [readonly]="true"></ion-input>
         </ion-col>
         <ion-col size="12" size-sm="12" style="display: flex; justify-content: center; align-items: center; margin-top: 30px;">
-          <ion-button color="primary" [routerLink]="['/motorista/folha-servico']">Voltar</ion-button>
-          <ion-button color="primary" (click)="finalizarEvento()" >Finalizar</ion-button>
-          <ion-button color="primary" (click)="limparCampos()" >Limpar</ion-button>
+          <!--<ion-button color="primary" [routerLink]="['/motorista/folha-servico']">Voltar</ion-button>-->
+          <ion-button color="primary" (click)="finalizarEvento()" >Finalizar Evento</ion-button>
+          <ion-button color="primary" id="open-modal">Cancelar Evento</ion-button>
+          <!--<ion-button color="primary" (click)="limparCampos()" >Limpar</ion-button>-->
         </ion-col>
       </ion-row>
     </ion-grid>
+
+    <ion-content class="ion-padding">
+      <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)">
+        <ng-template>
+          <ion-header>
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button (click)="cancel()">Cancelar</ion-button>
+              </ion-buttons>
+              <ion-title style="margin-left: 50px;">Cancelamento de Tarefa</ion-title>
+              <ion-buttons slot="end">
+                <ion-button (click)="cancelarEvento()" [strong]="true">Confirmar</ion-button>
+              </ion-buttons>
+            </ion-toolbar>
+          </ion-header>
+          <ion-content class="ion-padding">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="12" size-sm="12">
+                  <ion-item>
+                    <ion-input
+                    label="Motivo Cancelamento"
+                    labelPlacement="stacked"
+                    type="text"
+                    placeholder="Informe o motivo do cancelamento"
+                    formControlName="motivoCancelamento"
+                    ></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="" size-sm="3">
+                  <ion-input label="Cód" label-placement="floating" fill="solid" formControlName="codTarefa" [readonly]="true"></ion-input>
+                </ion-col>
+                <ion-col size="9" size-sm="9">
+                  <ion-input label="Evento" label-placement="floating" fill="solid" formControlName="evento" placeholder="Evento" [readonly]="true"></ion-input>
+                </ion-col>
+                <ion-col size="6" size-sm="6">
+                  <ion-input label="Inicio Real" label-placement="floating" fill="solid" formControlName="horaInicio" [readonly]="true"></ion-input>
+                </ion-col>
+                <ion-col size="6" size-sm="6">
+                  <ion-input label="Final Real" label-placement="floating" fill="solid" formControlName="horaFim" [readonly]="true"></ion-input>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-content>
+        </ng-template>
+      </ion-modal>
+    </ion-content>
+
   </form>
   <ion-toast
     [isOpen]="showToast"

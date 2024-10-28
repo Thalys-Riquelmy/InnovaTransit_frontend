@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp } from "@ionic/angular/standalone";
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonRouterOutlet } from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { Tarefa } from 'src/app/models/tarefa';
@@ -14,7 +14,7 @@ import { MotoristaService } from 'src/app/services/motorista-service/motorista.s
   selector: 'app-folha-servico',
   templateUrl: './folha-servico.component.html',
   styleUrls: ['./folha-servico.component.scss'],
-  imports: [IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+  imports: [IonRouterOutlet, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
     IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
   ],
   standalone: true

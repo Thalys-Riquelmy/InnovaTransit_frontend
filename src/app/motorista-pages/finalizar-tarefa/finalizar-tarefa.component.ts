@@ -1,29 +1,38 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast } from "@ionic/angular/standalone";
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast, IonAlert, IonModal } from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
 import { MotoristaService } from 'src/app/services/motorista-service/motorista.service';
+import { OverlayEventDetail } from '@ionic/core/components';
+import { TarefaService } from 'src/app/services/tarefa-service/tarefa.service';
 
 
 @Component({
   selector: 'app-finalizar-tarefa',
   templateUrl: './finalizar-tarefa.component.html',
   styleUrls: ['./finalizar-tarefa.component.scss'],
-  imports: [IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+  imports: [IonModal, IonAlert, IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
     IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
   ],
   standalone: true
 })
-export class FinalizarTarefaComponent {
+export class FinalizarTarefaComponent implements OnInit, OnDestroy{
+
+  @ViewChild(IonModal) modal!: IonModal;
+  name: string = '';
+
+  private timeInterval: any;
 
   //Injeções
   fb = inject (FormBuilder);
   motoristaService = inject (MotoristaService);
   folhaServicoService = inject (FolhaServicoService);
+  tarefaService = inject (TarefaService);
+  router = inject (Router);
   //Formularios
   formGroup: FormGroup;
   //Outros
@@ -51,14 +60,15 @@ export class FinalizarTarefaComponent {
        horarioInicial: [''],
        horarioFinal: [''],
        //Tarefa
-       codTarefa: [''],
+       codTarefa: ['', [Validators.required]],
        horaInicio: [''],
-       horaFim: [''],
+       horaFim: ['', [Validators.required]],
        horarioInicio: [''],
        horarioFim: [''],
        evento: [''],
-       hodometro: [''],
-       catraca: ['']
+       hodometro: ['', [Validators.required]],
+       catraca: ['', [Validators.required]],
+       motivoCancelamento: ['']
 
     })
     this.email = localStorage.getItem('email') || ''; 
@@ -123,61 +133,107 @@ export class FinalizarTarefaComponent {
   }
 
   carregarTarefaAtual() {
-    if (this.tarefaAtualIndex < this.tarefas.length) {
-      const tarefaAtual = this.tarefas[this.tarefaAtualIndex];
+    // Busca a próxima tarefa com 'horaInicio' preenchido e 'horaFim' vazio
+    const tarefaEncontrada = this.tarefas.find((tarefa, index) => {
+      return tarefa.horaInicio && !tarefa.horaFim;
+    });
+  
+    if (tarefaEncontrada) {
+      this.tarefaAtualIndex = this.tarefas.indexOf(tarefaEncontrada); // Atualiza o índice para a tarefa encontrada
+      // Carrega a tarefa encontrada
       this.formGroup.patchValue({
-        codTarefa: tarefaAtual.id,
-        horarioInicio: tarefaAtual.horarioInicio,
-        horarioFim: tarefaAtual.horarioFim,
-        horaInicio: tarefaAtual.horaInicio,
-        horaFim: tarefaAtual.horaFim,
-        evento: tarefaAtual.evento,
-        hodometro: tarefaAtual.hodometro,
-        catraca: tarefaAtual.catraca
+        codTarefa: tarefaEncontrada.id,
+        horarioInicio: tarefaEncontrada.horarioInicio,
+        horarioFim: tarefaEncontrada.horarioFim,
+        horaInicio: tarefaEncontrada.horaInicio,
+        horaFim: tarefaEncontrada.horaFim,
+        evento: tarefaEncontrada.evento,
+        hodometro: tarefaEncontrada.hodometro,
+        catraca: tarefaEncontrada.catraca,
       });
     } else {
-      console.log('Todas as tarefas foram processadas.');
+      console.log('Nenhuma tarefa com horaInicio preenchida e horaFim vazia foi encontrada.');
     }
   }
 
-  finalizarEvento() {  
+  finalizarEvento() {
     const agora = new Date();
     const horas = agora.toLocaleTimeString();
-    console.log('Data e hora atual:', horas);
-    
-    // Verifica se há tarefas restantes
-    if (this.tarefaAtualIndex < this.tarefas.length) {
-      
-      const tarefaAtual = this.tarefas[this.tarefaAtualIndex];
-      console.log('Tarefa atual:', tarefaAtual);
   
-      if (!tarefaAtual.horaInicio) { // Verifica se 'horaInicio' está preenchido
-        console.log('Tarefa ainda não foi iniciada.');
-        this.toastMessage = 'Você precisa iniciar a tarefa antes de finalizar a nova tarefa.';
+    // Percorre a lista de tarefas e encontra a primeira tarefa iniciada mas não finalizada
+    const tarefaAtual = this.tarefas.find(tarefa => tarefa.horaInicio && !tarefa.horaFim);
+  
+    if (tarefaAtual) {
+      const hodometroFinal = this.formGroup.value.hodometro;
+      const catracaFinal = this.formGroup.value.catraca;
+  
+      // Validação dos campos hodometro, catraca e horaFim
+      if (!hodometroFinal || !catracaFinal || !horas) {
+        this.toastMessage = 'Hodometro e catraca são campos obrigatórios!';
         this.showToast = true;
-        return;
+        return; // Interrompe a execução se algum campo estiver vazio
       }
   
-      // Se 'horaInicio' estiver preenchido, atualiza com a 'horaFim'
       tarefaAtual.horaFim = horas;
-      this.formGroup.patchValue({ horaFim: horas });
-      this.toastMessage = 'Tarefa finalizada com horaFim:', horas;
-      this.showToast = true;
-      
   
-      // Passa para a próxima tarefa
-      this.tarefaAtualIndex++;
-      console.log('Avançando para a próxima tarefa, índice:', this.tarefaAtualIndex);
+      this.tarefaService.finalizarTarefa(tarefaAtual.id, horas, hodometroFinal, catracaFinal).subscribe({
+        next: () => {
+          this.router.navigate(['/motorista/iniciar-tarefa']);
+          this.toastMessage = 'Tarefa finalizada com sucesso!';
+          this.showToast = true;
   
-      if (this.tarefaAtualIndex < this.tarefas.length) {
-        this.carregarTarefaAtual(); // Carrega a próxima tarefa
-      } else {
-        console.log('Todas as tarefas foram finalizadas.');
-      }
+          this.formGroup.patchValue({ horaFim: horas }); // Atualiza o formulário com hora final
+          this.tarefaAtualIndex = this.tarefas.indexOf(tarefaAtual) + 1; // Move para a próxima tarefa
+        },
+        error: (error) => {
+          this.toastMessage = 'Erro ao finalizar a tarefa: ' + error.message;
+          this.showToast = true;
+          console.error('Erro ao finalizar a tarefa:', error);
+        }
+      });
     } else {
-      console.log('Não há mais tarefas para finalizar.');
+      this.router.navigate(['/motorista/iniciar-jornada']);
     }
-  }  
+  }
+
+  cancelarEvento() {
+    const agora = new Date();
+    const horas = agora.toLocaleTimeString();
+    const motivoCancelamento = this.formGroup.value.motivoCancelamento;
+  
+    // Verifica se o motivo do cancelamento foi preenchido
+    if (!motivoCancelamento || motivoCancelamento.trim() === '') {
+      this.toastMessage = 'Para cancelar a tarefa, é necessário preencher o motivo!';
+      this.showToast = true;
+      return; // Interrompe a execução caso o motivo esteja vazio
+    }
+
+    // Busca a tarefa atual (iniciada mas não finalizada)
+    const tarefaAtual = this.tarefas.find(tarefa => tarefa.horaInicio && !tarefa.horaFim);
+  
+    if (tarefaAtual) {
+      this.tarefaService.cancelarTarefa(tarefaAtual.id, horas, motivoCancelamento).subscribe({
+        next: () => {
+          this.toastMessage = 'Tarefa cancelada com sucesso!';
+          this.showToast = true;
+  
+          // Atualiza o formulário e a tarefa atual com o horário de fim do cancelamento
+          this.formGroup.patchValue({ horaFim: horas });
+          tarefaAtual.horaFim = horas; // Marca a tarefa como finalizada com o horário de cancelamento
+  
+          // Opção: pode redirecionar ou atualizar a exibição da tarefa
+          this.router.navigate(['/motorista/iniciar-tarefa']);
+          this.cancel();
+        },
+        error: (error) => {
+          console.error('Erro ao cancelar a tarefa:', error);
+        }
+      });
+    } else {
+      this.router.navigate(['/motorista/iniciar-jornada']);
+    }
+  }
+  
 
   limparCampos(){
     this.formGroup.patchValue({
@@ -186,4 +242,38 @@ export class FinalizarTarefaComponent {
     })
   }
 
+  mudarPaginaTeste(){
+    this.router.navigate(['/motorista/iniciar-tarefa']);
+    
+  }
+
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+  confirm() {
+    this.modal.dismiss(this.name, 'confirm');
+  }
+
+  onWillDismiss(event: Event) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+    if (ev.detail.role === 'confirm') {
+     // this.message = `Hello, ${ev.detail.data}!`;
+    }
+  }
+
+  ngOnInit() {
+    this.updateTime();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timeInterval); // limpa o intervalo ao destruir o componente
+  }
+
+  updateTime() {
+    this.timeInterval = setInterval(() => {
+      const currentTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      this.formGroup.get('horaFim')?.setValue(currentTime);
+    }, 1000); // atualiza a cada segundo
+  }
 }
