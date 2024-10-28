@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FTInnovaIonic</string>
+    <string name="title_activity_main">FTInnovaIonic</string>
+    <string name="package_name">com.innova.transit</string>
+    <string name="custom_url_scheme">com.innova.transit</string>
+</resources>

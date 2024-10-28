@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonFab, IonFabButton, IonToast } from "@ionic/angular/standalone";
 import { MotoristaService } from 'src/app/services/motorista-service/motorista.service';
 import { Motorista } from 'src/app/models/motorista';
@@ -24,6 +24,7 @@ export class IniciarJornadaComponent {
   fb = inject (FormBuilder);
   motoristaService = inject (MotoristaService);
   folhaServicoService = inject (FolhaServicoService);
+  router = inject (Router);
   //Formularios
   formGroup: FormGroup;
   //Outros
@@ -125,6 +126,7 @@ export class IniciarJornadaComponent {
         next: (response) => {
           this.toastMessage = 'Jornada iniciada com sucesso!';
           this.showToast = true;
+          this.router.navigate(['/motorista/finalizar-tarefa']);
         },
         error: (error) => {
           console.error('Erro ao iniciar folha de serviço', error);
