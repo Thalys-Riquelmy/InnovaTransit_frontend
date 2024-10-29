@@ -16,4 +16,16 @@ export interface InnovaDB extends DBSchema {
       id: number; // Index pelo ID
     };
   };
+  jornada: {
+    key: number; // Chave primária da jornada
+    value: {
+      id: number; // ID da jornada
+      horaInicial: string; // Hora de início da jornada
+      horaFinal?: string; // Hora de fim da jornada (opcional)
+      estado: 'pendente' | 'concluída'; // Estado da jornada
+    };
+    indexes: {
+      id: number; // Index pelo ID
+    };
+  };
 }

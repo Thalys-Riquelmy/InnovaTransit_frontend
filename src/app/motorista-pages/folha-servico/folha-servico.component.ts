@@ -9,6 +9,7 @@ import { Tarefa } from 'src/app/models/tarefa';
 import { AuthService } from 'src/app/services/auth.service';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
 import { MotoristaService } from 'src/app/services/motorista-service/motorista.service';
+import { StorageService } from 'src/app/services/storage-service/storage.service';
 
 @Component({
   selector: 'app-folha-servico',
@@ -26,6 +27,7 @@ export class FolhaServicoComponent {
   motoristaService = inject (MotoristaService);
   authService = inject (AuthService);
   folhaServicoService = inject (FolhaServicoService);
+  storageService = inject (StorageService);
 
   //Formularios
   formGroup: FormGroup;
@@ -146,5 +148,4 @@ export class FolhaServicoComponent {
       // Aqui você pode adicionar um tratamento para quando a matrícula ou dataServico não estiverem definidos
     }
   }
-
 }

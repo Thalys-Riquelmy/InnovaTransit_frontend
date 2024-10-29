@@ -1,50 +1,106 @@
 import { Injectable } from '@angular/core';
 import { Network } from '@capacitor/network';
 import { StorageService } from './storage.service';
-import { TarefaService } from '../tarefa-service/tarefa.service'; // Importa seu serviço para interagir com o backend
+import { TarefaService } from '../tarefa-service/tarefa.service';
+import { FolhaServicoService } from '../folha-servico-service/folha-servico.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SyncService {
-  constructor(private storageService: StorageService, private tarefaService: TarefaService) {
-    this.listenForNetworkChanges(); // Escuta mudanças na rede
-  }
+  constructor(
+    private storageService: StorageService, 
+    private tarefaService: TarefaService,
+    private folhaServicoService: FolhaServicoService
+  ) {
+    this.listenForNetworkChanges();
+    console.log('SyncService inicializado');
+  }    
 
   private async listenForNetworkChanges() {
-    // Adiciona um listener para mudanças no status da rede
     Network.addListener('networkStatusChange', async (status) => {
+      console.log('Status da rede alterado:', status.connected);
       if (status.connected) {
-        await this.syncTasksWithBackend(); // Sincroniza tarefas se a rede estiver conectada
+        await this.syncTasksWithBackend();
+        await this.syncJornadasWithBackend();
       }
     });
   }
 
   // Método para adicionar tarefa
   async adicionarTarefa(tarefa: { id: number; horaInicio: string; estado: 'pendente' }) {
-    // Primeiro, tenta adicionar a tarefa ao backend
     try {
-      await this.tarefaService.iniciarTarefa(tarefa.id, tarefa.horaInicio).toPromise(); // Tenta adicionar no backend
-      // Se a adição for bem-sucedida, armazena a tarefa no IndexedDB
+      await this.tarefaService.iniciarTarefa(tarefa.id, tarefa.horaInicio).toPromise();
       await this.storageService.adicionarTarefa(tarefa);
     } catch (error) {
       console.error('Erro ao adicionar tarefa no backend:', error);
-      // Se falhar, armazena a tarefa no IndexedDB mesmo assim
       await this.storageService.adicionarTarefa(tarefa);
     }
   }
 
-  private async syncTasksWithBackend() {
-    const tarefasPendentes = await this.storageService.obterTodasTarefas(); // Obtém todas as tarefas pendentes
+  // Método para finalizar tarefa
+  async finalizarTarefa(tarefa: { id: number; horaFim: string; hodometroFinal: number; catracaFinal: number }) {
+    try {
+      await this.tarefaService.finalizarTarefa(tarefa.id, tarefa.horaFim, tarefa.hodometroFinal, tarefa.catracaFinal).toPromise();
+      await this.storageService.removerTarefa(tarefa.id);
+    } catch (error) {
+      console.error('Erro ao finalizar tarefa no backend:', error);
+    }
+  }
 
+  // Método para cancelar tarefa
+  async cancelarTarefa(tarefa: { id: number; motivoCancelamento: string; horaFim: string }) {
+    try {
+      await this.tarefaService.cancelarTarefa(tarefa.id, tarefa.horaFim, tarefa.motivoCancelamento).toPromise();
+      await this.storageService.removerTarefa(tarefa.id);
+    } catch (error) {
+      console.error('Erro ao cancelar tarefa no backend:', error);
+    }
+  }
+
+  // Método para adicionar jornada
+  async adicionarJornada(jornada: { id: number; horaInicial: string; estado: 'pendente' }) {
+    try {
+      await this.folhaServicoService.iniciarFolhaDeServico(jornada.id, jornada.horaInicial).toPromise();
+      await this.storageService.adicionarJornada(jornada);
+    } catch (error) {
+      console.error('Erro ao adicionar jornada no backend:', error);
+      await this.storageService.adicionarJornada(jornada);
+    }
+  }
+
+  // Método para finalizar jornada
+  async finalizarJornada(jornada: { id: number; horaFinal: string }) {
+    try {
+      await this.folhaServicoService.finalizarFolhaDeServico(jornada.id, jornada.horaFinal).toPromise();
+      await this.storageService.removerJornada(jornada.id);
+    } catch (error) {
+      console.error('Erro ao finalizar jornada no backend:', error);
+    }
+  }
+
+  private async syncTasksWithBackend() {
+    const tarefasPendentes = await this.storageService.obterTodasTarefas();
+    
     for (const tarefa of tarefasPendentes) {
       try {
-        // Envia a tarefa para o backend
         await this.tarefaService.iniciarTarefa(tarefa.id, tarefa.horaInicio).toPromise();
-        // Se a tarefa foi iniciada com sucesso, remove do IndexedDB
         await this.storageService.removerTarefa(tarefa.id);
       } catch (error) {
-        console.error('Erro ao sincronizar tarefa com o backend:', error); // Log de erro caso falhe a sincronização
+        console.error('Erro ao sincronizar tarefa com o backend:', error);
+      }
+    }
+  }
+
+  private async syncJornadasWithBackend() {
+    const jornadasPendentes = await this.storageService.obterTodasJornadas();
+    
+    for (const jornada of jornadasPendentes) {
+      try {
+        await this.folhaServicoService.iniciarFolhaDeServico(jornada.id, jornada.horaInicial).toPromise();
+        await this.storageService.removerJornada(jornada.id);
+      } catch (error) {
+        console.error('Erro ao sincronizar jornada com o backend:', error);
       }
     }
   }
