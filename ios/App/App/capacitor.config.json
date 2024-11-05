@@ -1,0 +1,12 @@
+{
+	"appId": "com.innova.transit",
+	"appName": "FTInnovaIonic",
+	"webDir": "www",
+	"packageClassList": [
+		"AppPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"CAPNetworkPlugin",
+		"StatusBarPlugin"
+	]
+}
