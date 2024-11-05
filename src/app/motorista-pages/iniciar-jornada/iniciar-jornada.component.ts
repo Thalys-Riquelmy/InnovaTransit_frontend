@@ -126,7 +126,7 @@ export class IniciarJornadaComponent {
         next: (response) => {
           this.toastMessage = 'Jornada iniciada com sucesso!';
           this.showToast = true;
-          this.router.navigate(['/motorista/finalizar-tarefa']);
+          this.router.navigate(['/motorista/iniciar-tarefa']);
         },
         error: (error) => {
           console.error('Erro ao iniciar folha de serviço', error);
@@ -136,6 +136,30 @@ export class IniciarJornadaComponent {
       console.error('ID da folha de serviço não encontrado.');
     }
   }
+
+  /*async iniciarJornada() {
+    const agora = new Date();
+    const horas = agora.toTimeString().split(' ')[0]; // Extrai a hora no formato 'HH:mm:ss'
+    this.formGroup.get('horaInicial')?.patchValue(horas);
+    console.log(horas);
+
+    // Verifica se a folha de serviço está preenchida
+    if (this.formGroup.value.id) {
+        try {
+          // Espera a resposta do método iniciarFolhaDeServico
+          const response = await (await this.folhaServicoService.iniciarFolhaDeServico(this.formGroup.value.id, horas)).toPromise();
+          
+          this.toastMessage = 'Jornada iniciada com sucesso!';
+          this.showToast = true;
+          this.router.navigate(['/motorista/iniciar-tarefa']);
+        } catch (error: any) { // Especifica o tipo como 'any' ou você pode criar um tipo mais específico
+            console.error('Erro ao iniciar folha de serviço', error);
+        }
+    } else {
+        console.error('ID da folha de serviço não encontrado.');
+    }
+  }*/
+  
 
   finalizarJornada() {
     const agora = new Date();

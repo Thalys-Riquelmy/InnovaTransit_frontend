@@ -52,9 +52,21 @@ export class LoginComponent implements OnInit{
     })
   }
 
-  ngOnInit(): void {
+  /*ngOnInit(): void {
     this.authService.clearStorage(); // Limpa o localStorage ao carregar a tela de login
-  }
+  }*/
+
+    ngOnInit(): void {
+      // Limpa o localStorage imediatamente ao carregar a tela de login
+      
+      // Configura um timeout para limpar o localStorage novamente após 10 segundos
+      setTimeout(() => {
+        //this.authService.clearStorage();
+        this.authService.logout();
+        console.log("localStorage limpo após 10 segundos!");
+      }, 10000); // 10000 milissegundos = 10 segundos
+    }
+    
   
   async onLogin() {
     if (this.formGroup.valid) {

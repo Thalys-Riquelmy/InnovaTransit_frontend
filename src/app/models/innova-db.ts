@@ -7,7 +7,6 @@ export interface InnovaDB extends DBSchema {
       id: number; // ID da tarefa, fornecido pelo backend
       horaInicio: string; // Hora de início
       horaFim?: string; // Hora de fim (opcional)
-      estado: 'pendente' | 'concluída'; // Estado da tarefa
       hodometroFinal?: number; // Hodômetro final (opcional)
       catracaFinal?: number; // Catraca final (opcional)
       motivoCancelamento?: string; // Motivo de cancelamento (opcional)
@@ -16,13 +15,13 @@ export interface InnovaDB extends DBSchema {
       id: number; // Index pelo ID
     };
   };
-  jornada: {
-    key: number; // Chave primária da jornada
+  folhaServico: { // Loja para a folha de serviço
+    key: number; // Chave primária da folha de serviço
     value: {
-      id: number; // ID da jornada
-      horaInicial: string; // Hora de início da jornada
-      horaFinal?: string; // Hora de fim da jornada (opcional)
-      estado: 'pendente' | 'concluída'; // Estado da jornada
+      id: number; // ID da folha de serviço
+      horaInicial: string; // Hora de início da folha de serviço
+      horaFinal?: string; // Hora de fim da folha de serviço (opcional)
+      tarefas: number[]; // Array de IDs de tarefas relacionadas
     };
     indexes: {
       id: number; // Index pelo ID

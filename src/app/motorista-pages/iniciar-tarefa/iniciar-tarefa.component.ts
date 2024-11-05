@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast } from "@ionic/angular/standalone";
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonMenuToggle,
+  IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast,  
+} from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
@@ -14,13 +16,14 @@ import { Router } from '@angular/router';
   selector: 'app-iniciar-tarefa',
   templateUrl: './iniciar-tarefa.component.html',
   styleUrls: ['./iniciar-tarefa.component.scss'],
-  imports: [IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
-    IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
+  imports: [IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, 
+    IonCardContent, IonList, IonItem, IonButton, IonIcon, IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, 
+    IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet, IonMenuToggle
   ],
   standalone: true
 })
-export class IniciarTarefaComponent implements OnInit, OnDestroy{
-
+export class IniciarTarefaComponent implements OnInit, OnDestroy{  
+  
   //Injeções
   fb = inject (FormBuilder);
   motoristaService = inject (MotoristaService);
@@ -65,7 +68,6 @@ export class IniciarTarefaComponent implements OnInit, OnDestroy{
     //console.log('Email recuperado do localStorage:', this.email);
     this.buscarMotoristaPorEmail();
     setTimeout(() => {
-      //console.log('Executando ação após 2 segundos'); 
       this.buscarFolha();
     }, 500);
   }

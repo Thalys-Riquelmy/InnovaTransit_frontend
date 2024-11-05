@@ -130,10 +130,10 @@ export class AuthService {
   }
 
   // Método para limpar o localStorage ao carregar a tela de login
-  /*public async clearStorage() {
+  public async clearStorageTeste() {
     await this.storage.clear(); // Limpa todo o storage
     console.log('Storage limpo ao carregar a tela de login');
-  }*/
+  }
 
   public async clearStorage() {
     try {

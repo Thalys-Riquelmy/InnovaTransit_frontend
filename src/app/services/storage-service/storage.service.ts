@@ -1,145 +1,172 @@
 import { Injectable } from '@angular/core';
 import { openDB, IDBPDatabase } from 'idb';
-import { InnovaDB } from '../../models/innova-db';
+import { FolhaServico } from '../../models/folha-servico';
+import { Tarefa } from 'src/app/models/tarefa';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class StorageService {
-  private db: IDBPDatabase<InnovaDB> | null = null;
+  private dbPromise: Promise<IDBPDatabase>;
 
   constructor() {
-    this.openDatabase().then(() => {
-      console.log('Banco de dados InnovaDB inicializado:', this.db);
-    }).catch(error => {
-      console.error('Erro ao inicializar o banco de dados:', error);
+      this.dbPromise = this.initDB();
+  }
+
+  private async initDB(): Promise<IDBPDatabase> {
+    return openDB('InnovaDB', 1, {
+        upgrade(db) {
+          db.createObjectStore('tarefas', { keyPath: 'id' });
+          db.createObjectStore('folhasServico', { keyPath: 'id' }); // Cria o objeto para FolhaServico
+        },
     });
   }
 
-  private async openDatabase() {
-    this.db = await openDB<InnovaDB>('InnovaDB', 1, {
-      upgrade(db) {
-        console.log('Criando objeto store tarefas');
-        db.createObjectStore('tarefas', {
-          keyPath: 'id',
-          autoIncrement: false
-        });
+    // MÉTODOS RELACIONADOS A TAREFAS //
 
-        console.log('Criando objeto store jornada');
-        db.createObjectStore('jornada', {
-          keyPath: 'id',
-          autoIncrement: false
-        });
-      }
-    });
-    console.log('Banco de dados InnovaDB inicializado:', this.db);
+  // Método para salvar uma tarefa
+  async saveTarefa(tarefa: Tarefa): Promise<void> {
+    const db = await this.dbPromise;
+    await db.put('tarefas', tarefa);
   }
 
-  private async ensureDatabaseOpen() {
-    if (!this.db) {
-      await this.openDatabase();
-    }
+  // Método para armazenar uma tarefa novamente
+  async storeTarefa(tarefa: Tarefa): Promise<void> {
+  const db = await this.dbPromise;
+  await db.put('tarefas', tarefa); // Armazena ou atualiza a tarefa no IndexedDB
   }
 
-  // Métodos para tarefas
-  async adicionarTarefa(tarefa: {
-    id: number; // ID da tarefa, fornecido pelo backend
-    horaInicio: string; // Hora de início
-    estado: 'pendente'; // Estado da tarefa
-    horaFim?: string; // Hora de fim (opcional)
-    hodometroFinal?: number; // Hodômetro final (opcional)
-    catracaFinal?: number; // Catraca final (opcional)
-    motivoCancelamento?: string; // Motivo de cancelamento (opcional)
-  }): Promise<number> {
-    await this.ensureDatabaseOpen();
-    await this.db?.add('tarefas', tarefa);
-    console.log('Tarefa adicionada:', tarefa);
-    return tarefa.id;
+  // Método para obter todas as tarefas
+  async getAllTarefas(): Promise<Tarefa[]> {
+    const db = await this.dbPromise;
+    return db.getAll('tarefas');
   }
 
-  async obterTodasTarefas(): Promise<InnovaDB['tarefas']['value'][]> {
-    await this.ensureDatabaseOpen();
-    const tarefas = await this.db?.getAll('tarefas') || [];
-    console.log('Todas as tarefas obtidas:', tarefas);
-    return tarefas;
+  // Método para deletar uma tarefa pelo ID
+  async deleteTarefa(id: number): Promise<void> {
+    const db = await this.dbPromise;
+    await db.delete('tarefas', id);
   }
 
-  async removerTarefa(id: number): Promise<void> {
-    await this.ensureDatabaseOpen();
-    await this.db?.delete('tarefas', id);
-    console.log(`Tarefa com ID ${id} removida.`);
-  }
+  // Método para iniciar uma tarefa no IndexedDB
+  async iniciarTarefaLocal(id: number, horaInicio: string): Promise<void> {
+    const db = await this.dbPromise;
+    const tarefa = await db.get('tarefas', id);
 
-  async atualizarTarefa(tarefa: {
-    id: number; // ID da tarefa
-    horaInicio?: string; // Hora de início (opcional)
-    horaFim?: string; // Hora de fim (opcional)
-    estado?: 'pendente' | 'concluída'; // Estado da tarefa (opcional)
-    hodometroFinal?: number; // Hodômetro final (opcional)
-    catracaFinal?: number; // Catraca final (opcional)
-    motivoCancelamento?: string; // Motivo de cancelamento (opcional)
-  }): Promise<void> {
-    await this.ensureDatabaseOpen();
-
-    const tarefaExistente = await this.db?.get('tarefas', tarefa.id);
-    if (!tarefaExistente) {
-      throw new Error(`Tarefa com ID ${tarefa.id} não encontrada.`);
+    if (!tarefa) {
+        throw new Error('Tarefa não encontrada');
     }
 
-    const tarefaAtualizada = {
-      ...tarefaExistente,
-      ...tarefa
+    // Atualiza a hora de início
+    tarefa.horaInicio = horaInicio;
+
+    // Salva a tarefa atualizada no IndexedDB
+    await db.put('tarefas', tarefa);
+  }
+
+  //Metodo para finalizar uma tarefa no indexedDB
+  async finalizarTarefaLocal(id: number, horaFim: string, hodometroFinal: number, catracaFinal: number): Promise<void> {
+    const db = await this.dbPromise;
+    const tarefa = await db.get('tarefas', id);
+
+    if(!tarefa) {
+      throw new Error ('Tarefa não encontrada');
+    }
+
+    //Atualiza a horaFim, catraca e hodometro
+    tarefa.horaFim = horaFim;
+    tarefa.hodometroFinal = hodometroFinal;
+    tarefa.catracaFinal = catracaFinal;
+
+    //Salva a tarefa atualizada no indexedDB
+    await db.put('tarefas', tarefa);
+  }
+
+  //Metodo para cancelar uma tarefa no indexedDB
+  async cancelarTarefaLocal(id: number, horaFim: string, motivoCancelamento: string): Promise<void> {
+    const db = await this.dbPromise;
+    const tarefa = await db.get('tarefas', id);
+
+    if(!tarefa) {
+      throw new Error ('Tarefa não encontrada');
+    }
+
+    //Atualiza a horaFim e o motivoCancelamento
+    tarefa.horaFim = horaFim;
+    tarefa.motivoCancelamento = motivoCancelamento;
+
+    //Salva a tarefa atualizada no indexedDB
+    await db.put('tarefas', tarefa);
+  }
+
+    // MÉTODOS RELACIONADOS A FOLHAS DE SERVIÇOS //
+
+  // Método para obter todas as tarefas
+  async getAllFolhasServico(): Promise<FolhaServico[]> {
+    const db = await this.dbPromise;
+    return db.getAll('folhasServico');
+}
+
+  // Método para salvar uma folha de serviço
+  async saveFolhaServico(folhaServico: FolhaServico): Promise<void> {
+    const db = await this.dbPromise;
+    await db.put('folhasServico', folhaServico);
+  }
+
+  // Método para deletar folha de servico pelo id
+  async deleteFolhaServico(id: number): Promise<void> {
+    const db = await this.dbPromise;
+    await db.delete('folhasServico', id);
+  }
+
+  // Método para iniciar a folha de serviço localmente no IndexedDB
+  async iniciarFolhaServicoLocal(id: number, horaInicial: string): Promise<void> {
+    const db = await this.dbPromise;
+    const folhaServico = await db.get('folhasServico', id);
+
+    if (!folhaServico) {
+        throw new Error('Folha de serviço não encontrada');
+    }
+
+    // Atualiza a horaInicial
+    folhaServico.horaInicial = horaInicial;
+
+    // Salva a folha de serviço atualizada no IndexedDB
+    await db.put('folhasServico', folhaServico);
+  }
+
+  // Metodo para finalizar a folha de serviço localmente no IndexedDB
+  async finalizarFolhaServicoLocal(id: number, horaFinal: string): Promise<void> {
+    const db = await this.dbPromise;
+    const folhaServico = await db.get('folhasServico', id);
+
+    if (!folhaServico) {
+        throw new Error('Folha de serviço não encontrada');
+    }
+
+    // Atualiza a horaFinal
+    folhaServico.horaFinal = horaFinal;
+
+    // Salva a folha de serviço atualizada no IndexedDB
+    await db.put('folhasServico', folhaServico);
+  }
+
+  // Método para salvar a folha de serviço com os IDs das tarefas relacionadas
+  async saveFolhaServicoComTarefas(folhaServico: FolhaServico, tarefas: Tarefa[]): Promise<void> {
+    const db = await this.dbPromise;
+
+    // Salvar cada tarefa no IndexedDB
+    for (const tarefa of tarefas) {
+        await db.put('tarefas', tarefa);
+    }
+
+    // Criar uma cópia da folha de serviço para salvar no IndexedDB
+    const folhaServicoParaSalvar = {
+        ...folhaServico,
+        tarefas: tarefas.map(tarefa => tarefa.id) // Mapeia as tarefas para seus IDs
     };
 
-    await this.db?.put('tarefas', tarefaAtualizada);
-    console.log('Tarefa atualizada:', tarefaAtualizada);
-  }
-
-  // Métodos para jornada
-  async adicionarJornada(jornada: {
-    id: number; // ID da jornada, fornecido pelo backend
-    horaInicial: string; // Hora de início da jornada
-    estado: 'pendente'; // Estado da jornada
-    horaFinal?: string; // Hora de fim da jornada (opcional)
-  }): Promise<number> {
-    await this.ensureDatabaseOpen();
-    await this.db?.add('jornada', jornada);
-    console.log('Jornada adicionada:', jornada);
-    return jornada.id;
-  }
-
-  async obterTodasJornadas(): Promise<InnovaDB['jornada']['value'][]> {
-    await this.ensureDatabaseOpen();
-    const jornadas = await this.db?.getAll('jornada') || [];
-    console.log('Todas as jornadas obtidas:', jornadas);
-    return jornadas;
-  }
-
-  async removerJornada(id: number): Promise<void> {
-    await this.ensureDatabaseOpen();
-    await this.db?.delete('jornada', id);
-    console.log(`Jornada com ID ${id} removida.`);
-  }
-
-  async atualizarJornada(jornada: {
-    id: number; // ID da jornada
-    horaInicial?: string; // Hora de início (opcional)
-    horaFinal?: string; // Hora de fim (opcional)
-    estado?: 'pendente' | 'concluída'; // Estado da jornada (opcional)
-  }): Promise<void> {
-    await this.ensureDatabaseOpen();
-
-    const jornadaExistente = await this.db?.get('jornada', jornada.id);
-    if (!jornadaExistente) {
-      throw new Error(`Jornada com ID ${jornada.id} não encontrada.`);
-    }
-
-    const jornadaAtualizada = {
-      ...jornadaExistente,
-      ...jornada
-    };
-
-    await this.db?.put('jornada', jornadaAtualizada);
-    console.log('Jornada atualizada:', jornadaAtualizada);
+    // Salvar a folha de serviço atualizada no IndexedDB com apenas os IDs das tarefas
+    await db.put('folhasServico', folhaServicoParaSalvar);
   }
 }

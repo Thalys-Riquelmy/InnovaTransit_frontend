@@ -1,37 +1,10 @@
-<ion-menu side="start" menuId="main-menu" contentId="main-content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>InnovaTransit</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <ion-list>
-      <ion-item button [routerLink]="['/motorista/iniciar-jornada']">
-        Iniciar Jornada
-      </ion-item>
-      <ion-item button [routerLink]="['/motorista/iniciar-tarefa']">
-        Iniciar Tarefa
-      </ion-item>
-      <ion-item button [routerLink]="['/motorista/finalizar-tarefa']">
-        Finalizar Tarefa
-      </ion-item>
-      <ion-item button [routerLink]="['/motorista/exibir-viagens']">
-        Exibir Viagens
-      </ion-item>
-      <ion-item button [routerLink]="['/auth/login']">
-        Sair
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
 <div class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
-      <ion-title>Innova Transit</ion-title>
+      <ion-title>InnovaTransit</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -43,10 +16,10 @@
           <ion-input label="Veiculo:" formControlName="numeroVeiculo" [readonly]="true"></ion-input>
         </ion-item></ion-col>
         <ion-col size="6" size-sm="3"><ion-item>
-          <ion-input label="Hora Início:" formControlName="horaInicial" [readonly]="true"></ion-input>
+          <ion-input label="Hora Início:" formControlName="horarioInicial" [readonly]="true"></ion-input>
         </ion-item></ion-col>
         <ion-col size="6" size-sm="3"><ion-item>
-          <ion-input label="Hora Final:" formControlName="horaFinal" [readonly]="true"></ion-input>
+          <ion-input label="Hora Final:" formControlName="horarioFinal" [readonly]="true"></ion-input>
         </ion-item></ion-col>
         <ion-col size="6" size-sm="3"><ion-item>
           <ion-input label="Mat.:" formControlName="matricula" [readonly]="true"></ion-input>

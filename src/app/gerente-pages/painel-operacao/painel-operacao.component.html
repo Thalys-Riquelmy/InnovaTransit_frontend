@@ -1,3 +1,142 @@
-<p>
-  painel-operacao works!
-</p>
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>InnovaTransit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Monitoramento Operações</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment value="veiculos-operando" (ionChange)="segmentChanged($event)">
+    <ion-segment-button value="veiculos-operando">
+      <ion-label>Veículos Operando</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="viagens-execucao">
+      <ion-label>Viagens em Execução</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="viagens-realizar">
+      <ion-label>Viagens a Serem Realizadas</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="viagens-canceladas">
+      <ion-label>Viagens Finalizadas</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  
+  <ion-card *ngIf="selectedSegment === 'veiculos-operando'">
+    <ion-card-content>
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Veículo</th>
+            <th>Rota</th>
+            <th>Motorista</th>
+            <th>Previsão</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarefa of tarefasComHoraInicio">
+            <td>{{ tarefa.veiculo }}</td> 
+            <td>{{ tarefa.tarefa.evento }}</td> 
+            <td>{{ tarefa.motorista }}</td> 
+            <td>{{ tarefa.tarefa.horarioFim }}</td> 
+          </tr>
+        </tbody>
+      </table>
+    </ion-card-content>
+  </ion-card>
+
+  
+  <ion-card *ngIf="selectedSegment === 'viagens-execucao'">
+    <ion-card-content>
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Rota</th>
+            <th>Motorista</th>
+            <th>Partida</th>
+            <th>Previsão Chegada</th>
+            <th>Chegada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarefa of tarefasComHoraInicio">
+            <td>{{ tarefa.tarefa.evento }}</td> 
+            <td>{{ tarefa.motorista }}</td> 
+            <td>{{ tarefa.tarefa.horaInicio }}</td> 
+            <td>{{ tarefa.tarefa.horarioFim }}</td> 
+            <td>
+              {{ currentHour | date: 'HH:mm:ss' }} 
+              <span *ngIf="tarefa.tarefa.horarioFim">
+                <span [ngClass]="isAtrasado(tarefa.tarefa.horarioFim) ? 'viagem-atrasada' : 'viagem-tempo'">
+                  {{ isAtrasado(tarefa.tarefa.horarioFim) ? 'Viagem Atrasada' : 'Viagem em Tempo' }}
+                </span>
+              </span>
+            </td>                                                                                         
+          </tr>
+        </tbody>
+      </table>
+    </ion-card-content>
+  </ion-card>
+
+  
+  <ion-card *ngIf="selectedSegment === 'viagens-realizar'">
+    <ion-card-content>
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Rota</th>
+            <th>Motorista</th>
+            <th>Previsão Partida</th>
+            <th>Previsão Chegada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarefa of tarefasIniciar">
+            <td>{{ tarefa.tarefa.evento }}</td> 
+            <td>{{ tarefa.motorista }}</td> 
+            <td>{{ tarefa.tarefa.horarioInicio }}</td> 
+            <td>{{ tarefa.tarefa.horarioFim }}</td> 
+          </tr>
+        </tbody>
+      </table>
+    </ion-card-content>
+  </ion-card>
+
+  
+  <ion-card *ngIf="selectedSegment === 'viagens-canceladas'">
+    <ion-card-content>
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>Motorista</th>
+            <th>Evento</th>
+            <th>Partida</th>
+            <th>Chegada</th>
+            <th>Cancelado</th>
+            <th>Motivo Cancelamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarefa of tarefasFinalizadas">
+            <td>{{ tarefa.motorista }}</td> 
+            <td>{{ tarefa.tarefa.evento }}</td> 
+            <td>{{ tarefa.tarefa.horaInicio }}</td> 
+            <td>{{ tarefa.tarefa.horaFim }}</td> 
+            <td>{{ tarefa.tarefa.cancelado === true ? 'Sim' : 'Não' }}</td>
+            <td>{{ tarefa.tarefa.motivoCancelamento}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+</div>
