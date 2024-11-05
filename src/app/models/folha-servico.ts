@@ -1,3 +1,4 @@
+import { Motorista } from "./motorista";
 import { Tarefa } from "./tarefa";
 import { Veiculo } from "./veiculo";
 
@@ -12,4 +13,6 @@ export class FolhaServico {
     finalizada: boolean = false;
     veiculo: Veiculo = new Veiculo();
     tarefas : Tarefa [] = [];
+    tarefa: Tarefa = new Tarefa();
+    motorista: Motorista = new Motorista();
 }

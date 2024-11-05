@@ -2,30 +2,38 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp } from "@ionic/angular/standalone";
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonMenuToggle, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonRouterOutlet, IonLabel } from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { Tarefa } from 'src/app/models/tarefa';
 import { AuthService } from 'src/app/services/auth.service';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
 import { MotoristaService } from 'src/app/services/motorista-service/motorista.service';
+import { StorageService } from 'src/app/services/storage-service/storage.service';
 
 @Component({
   selector: 'app-folha-servico',
   templateUrl: './folha-servico.component.html',
   styleUrls: ['./folha-servico.component.scss'],
-  imports: [IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
-    IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
+  imports: [IonLabel, IonRouterOutlet, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+    IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet, IonMenuToggle
   ],
   standalone: true
 })
 export class FolhaServicoComponent {
+
+  public appPages = [
+    { title: 'Início', url: '/home', icon: 'home' },
+    { title: 'Perfil', url: '/perfil', icon: 'person' },
+    { title: 'Configurações', url: '/configuracoes', icon: 'settings' }
+  ];
 
   //Injeções
   fb = inject (FormBuilder);
   motoristaService = inject (MotoristaService);
   authService = inject (AuthService);
   folhaServicoService = inject (FolhaServicoService);
+  storageService = inject (StorageService);
 
   //Formularios
   formGroup: FormGroup;
@@ -146,5 +154,4 @@ export class FolhaServicoComponent {
       // Aqui você pode adicionar um tratamento para quando a matrícula ou dataServico não estiverem definidos
     }
   }
-
 }

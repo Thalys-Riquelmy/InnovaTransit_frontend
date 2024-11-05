@@ -16,7 +16,7 @@ import { AuthService } from 'src/app/services/auth.service';
     IonRow, IonCol, IonCardTitle, IonHeader, IonToolbar, IonTitle, IonContent, HttpClientModule, ReactiveFormsModule
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   //Injeções 
   authService = inject (AuthService);
@@ -55,6 +55,18 @@ export class LoginComponent {
   /*ngOnInit(): void {
     this.authService.clearStorage(); // Limpa o localStorage ao carregar a tela de login
   }*/
+
+    ngOnInit(): void {
+      // Limpa o localStorage imediatamente ao carregar a tela de login
+      
+      // Configura um timeout para limpar o localStorage novamente após 10 segundos
+      setTimeout(() => {
+        //this.authService.clearStorage();
+        this.authService.logout();
+        console.log("localStorage limpo após 10 segundos!");
+      }, 10000); // 10000 milissegundos = 10 segundos
+    }
+    
   
   async onLogin() {
     if (this.formGroup.valid) {

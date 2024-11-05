@@ -6,7 +6,6 @@ import { FolhaServicoComponent } from './folha-servico/folha-servico.component';
 import { IniciarJornadaComponent } from './iniciar-jornada/iniciar-jornada.component';
 import { IniciarTarefaComponent } from './iniciar-tarefa/iniciar-tarefa.component';
 import { FinalizarTarefaComponent } from './finalizar-tarefa/finalizar-tarefa.component';
-import { EstornarTarefaComponent } from './estornar-tarefa/estornar-tarefa.component';
 import { ExibirViagensComponent } from './exibir-viagens/exibir-viagens.component';
 
 
@@ -15,7 +14,7 @@ import { ExibirViagensComponent } from './exibir-viagens/exibir-viagens.componen
   imports: [
     CommonModule,
     MotoristaPagesRoutingModule, FolhaServicoComponent, IniciarJornadaComponent, IniciarTarefaComponent, 
-    FinalizarTarefaComponent, EstornarTarefaComponent, ExibirViagensComponent 
+    FinalizarTarefaComponent, ExibirViagensComponent
   ]
 })
 export class MotoristaPagesModule { }

@@ -1,0 +1,119 @@
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Innova Transit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" size-sm="3">
+          <ion-item>
+            <ion-input label="Empresa" labelPlacement="floating" value="Metrobus Transporte Coletivo S/A"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" size-sm="3">
+          <ion-item>
+            <ion-input label="CNPJ" labelPlacement="floating" value="02.392.459/0001-03"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <!-- Seletor de frequência usando ion-radio e campos à direita -->
+      <ion-row>
+        <ion-col size="3">
+          <ion-list>
+            <ion-radio-group [(ngModel)]="frequencia">
+              <ion-item>
+                <ion-label>Uma vez</ion-label>
+                <ion-radio slot="start" value="once"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>Diariamente</ion-label>
+                <ion-radio slot="start" value="daily"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>Semanalmente</ion-label>
+                <ion-radio slot="start" value="weekly"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>Mensalmente</ion-label>
+                <ion-radio slot="start" value="monthly"></ion-radio>
+              </ion-item>
+            </ion-radio-group>
+          </ion-list>
+        </ion-col>
+
+        <!-- Campos dinâmicos mostrados à direita com base na frequência selecionada -->
+        <ion-col size="3">
+          <ion-row *ngIf="frequencia === 'once'">
+            <ion-col size="12">
+              <ion-label style="margin-left: 60px;">Selecione a data e hora</ion-label>
+              <ion-datetime-button datetime="datetimeOnce"></ion-datetime-button>
+              <ion-modal [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime id="datetimeOnce"></ion-datetime>
+                </ng-template>
+              </ion-modal>
+            </ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="frequencia === 'daily'">
+            <ion-col size="12">
+              <ion-item>
+                <ion-label>Hora diária</ion-label>
+                <ion-datetime displayFormat="HH:mm" [(ngModel)]="horaDiaria" presentation="time"></ion-datetime>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="frequencia === 'weekly'">
+            <ion-col size="12">
+              <ion-item>
+                <ion-label>Dia da Semana</ion-label>
+                <ion-select [(ngModel)]="diaSemana" placeholder="Selecione o dia">
+                  <ion-select-option value="monday">Segunda-feira</ion-select-option>
+                  <ion-select-option value="tuesday">Terça-feira</ion-select-option>
+                  <ion-select-option value="wednesday">Quarta-feira</ion-select-option>
+                  <ion-select-option value="thursday">Quinta-feira</ion-select-option>
+                  <ion-select-option value="friday">Sexta-feira</ion-select-option>
+                  <ion-select-option value="saturday">Sábado</ion-select-option>
+                  <ion-select-option value="sunday">Domingo</ion-select-option>
+                </ion-select>
+              </ion-item>
+              <ion-item>
+                <ion-input label="Horário para busca de folha de serviço" type="time" labelPlacement="floating"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+
+          <ion-row *ngIf="frequencia === 'monthly'">
+            <ion-col style="margin-top: 10px;" size="12">
+              <ion-label style="margin-left: 15px;">Dia do Mês</ion-label>
+              <ion-item>
+                <ion-input type="number" min="1" max="31" [(ngModel)]="diaMes" placeholder="Escolha o dia"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="12">
+              <ion-item>
+                <ion-input label="Horário para busca de folha de serviço" type="time" labelPlacement="floating"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <!-- Botões Salvar e Cancelar centralizados -->
+      <ion-row>
+        <ion-col size="12" style="text-align: center; margin-top: 20px;">
+          <ion-button color="primary">Salvar</ion-button>
+          <ion-button color="secondary">Cancelar</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+</div>

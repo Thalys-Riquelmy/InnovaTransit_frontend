@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonFab, IonFabButton } from "@ionic/angular/standalone";
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonFab, IonFabButton, IonToast } from "@ionic/angular/standalone";
 import { MotoristaService } from 'src/app/services/motorista-service/motorista.service';
 import { Motorista } from 'src/app/models/motorista';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
@@ -13,7 +13,7 @@ import { FolhaServico } from 'src/app/models/folha-servico';
   selector: 'app-iniciar-jornada',
   templateUrl: './iniciar-jornada.component.html',
   styleUrls: ['./iniciar-jornada.component.scss'],
-  imports: [IonFabButton, IonFab, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+  imports: [IonToast, IonFabButton, IonFab, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
     IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
   ],
   standalone: true
@@ -24,6 +24,7 @@ export class IniciarJornadaComponent {
   fb = inject (FormBuilder);
   motoristaService = inject (MotoristaService);
   folhaServicoService = inject (FolhaServicoService);
+  router = inject (Router);
   //Formularios
   formGroup: FormGroup;
   //Outros
@@ -31,6 +32,9 @@ export class IniciarJornadaComponent {
   motorista: Motorista | null = null; 
   folhaServico: FolhaServico | null = null;
   dataServico: string = this.formatarData(new Date());
+  //Mensagens
+  showToast = false; // Variável para controlar o Toast
+  toastMessage = ''; // Variável para a mensagem do Toast
 
   constructor() { 
     this.formGroup = this.fb.group({
@@ -109,13 +113,74 @@ export class IniciarJornadaComponent {
       // Aqui você pode adicionar um tratamento para quando a matrícula ou dataServico não estiverem definidos
     }
   }
-
-  iniciarJornada() {
-    const agora = new Date(); // Obtém a data e hora atuais do dispositivo
-    const horas = agora.toLocaleTimeString(); // Extrai a hora no formato 'HH:MM:SS'
-    this.formGroup.get('horarioInicial')?.patchValue(horas);
-    console.log(horas); 
-  }
   
+  iniciarJornada() {
+    const agora = new Date();
+    const horas = agora.toTimeString().split(' ')[0]; // Extrai a hora no formato 'HH:mm:ss'
+    this.formGroup.get('horaInicial')?.patchValue(horas);
+    console.log(horas);
+  
+    // Verifica se a folha de serviço está preenchida
+    if (this.formGroup.value.id) {
+      this.folhaServicoService.iniciarFolhaDeServico(this.formGroup.value.id, horas).subscribe({
+        next: (response) => {
+          this.toastMessage = 'Jornada iniciada com sucesso!';
+          this.showToast = true;
+          this.router.navigate(['/motorista/iniciar-tarefa']);
+        },
+        error: (error) => {
+          console.error('Erro ao iniciar folha de serviço', error);
+        }
+      });
+    } else {
+      console.error('ID da folha de serviço não encontrado.');
+    }
+  }
+
+  /*async iniciarJornada() {
+    const agora = new Date();
+    const horas = agora.toTimeString().split(' ')[0]; // Extrai a hora no formato 'HH:mm:ss'
+    this.formGroup.get('horaInicial')?.patchValue(horas);
+    console.log(horas);
+
+    // Verifica se a folha de serviço está preenchida
+    if (this.formGroup.value.id) {
+        try {
+          // Espera a resposta do método iniciarFolhaDeServico
+          const response = await (await this.folhaServicoService.iniciarFolhaDeServico(this.formGroup.value.id, horas)).toPromise();
+          
+          this.toastMessage = 'Jornada iniciada com sucesso!';
+          this.showToast = true;
+          this.router.navigate(['/motorista/iniciar-tarefa']);
+        } catch (error: any) { // Especifica o tipo como 'any' ou você pode criar um tipo mais específico
+            console.error('Erro ao iniciar folha de serviço', error);
+        }
+    } else {
+        console.error('ID da folha de serviço não encontrado.');
+    }
+  }*/
+  
+
+  finalizarJornada() {
+    const agora = new Date();
+    const horas = agora.toTimeString().split(' ')[0]; // Extrai a hora no formato 'HH:mm:ss'
+    this.formGroup.get('horaFinal')?.patchValue(horas);
+    console.log(horas);
+  
+    // Verifica se a folha de serviço está preenchida
+    if (this.formGroup.value.id) {
+      this.folhaServicoService.finalizarFolhaDeServico(this.formGroup.value.id, horas).subscribe({
+        next: (response) => {
+          this.toastMessage = 'Jornada finalizada com sucesso!';
+          this.showToast = true;
+        },
+        error: (error) => {
+          console.error('Erro ao finalizar folha de serviço', error);
+        }
+      });
+    } else {
+      console.error('ID da folha de serviço não encontrado.');
+    }
+  }  
 
 }

@@ -1,0 +1,34 @@
+ion-toolbar {
+    text-align: center;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .table th {
+    background-color: #333;
+    color: white;
+  }
+  
+  .table-striped tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+  }
+  
+  .viagem-tempo {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .viagem-atrasada {
+    color: red;
+    font-weight: bold;
+  }
+  
