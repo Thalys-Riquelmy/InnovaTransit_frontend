@@ -114,7 +114,7 @@ import { Storage } from '@ionic/storage-angular';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api';
+  private apiUrl = 'http://172.18.0.3:8080/api';
 
   constructor(
     private http: HttpClient,

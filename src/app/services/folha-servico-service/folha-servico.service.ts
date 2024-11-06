@@ -10,7 +10,7 @@ import { StorageService } from '../storage-service/storage.service';
 export class FolhaServicoService {
   storageService = inject (StorageService);
 
-  private apiUrl = 'http://localhost:8080/api/folha-servico'; // URL da sua API
+  private apiUrl = 'http://172.18.0.3:8080/api/folha-servico'; // URL da sua API
 
   constructor(private http: HttpClient) {  }
 

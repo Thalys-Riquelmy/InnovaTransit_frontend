@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class TarefaService {
-  private apiUrl = 'http://localhost:8080/api/folha-servico';
+  private apiUrl = 'http://172.18.0.3:8080/api/folha-servico';
 
   constructor(private http: HttpClient) { }
 

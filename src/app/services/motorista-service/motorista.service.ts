@@ -7,7 +7,7 @@ import { Motorista } from 'src/app/models/motorista';
   providedIn: 'root'
 })
 export class MotoristaService {
-  private apiUrl = 'http://localhost:8080/api/motorista'; // Altere a URL para a URL da sua API
+  private apiUrl = 'http://172.18.0.3:8080/api/motorista'; // Altere a URL para a URL da sua API
 
   constructor(private http: HttpClient) {}
 
