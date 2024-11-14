@@ -3,8 +3,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonMenuToggle,
-  IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast,  
-} from "@ionic/angular/standalone";
+  IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast, IonRefresher, IonRefresherContent } from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
@@ -16,7 +15,7 @@ import { Router } from '@angular/router';
   selector: 'app-iniciar-tarefa',
   templateUrl: './iniciar-tarefa.component.html',
   styleUrls: ['./iniciar-tarefa.component.scss'],
-  imports: [IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, 
+  imports: [IonRefresherContent, IonRefresher, IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, 
     IonCardContent, IonList, IonItem, IonButton, IonIcon, IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, 
     IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet, IonMenuToggle
   ],
@@ -70,7 +69,7 @@ export class IniciarTarefaComponent implements OnInit, OnDestroy{
     setTimeout(() => {
       this.buscarFolha();
     }, 500);
-  }
+  }  
 
   buscarMotoristaPorEmail() {
     this.motoristaService.buscarMotoristaPorEmail(this.email).subscribe({
@@ -166,12 +165,17 @@ export class IniciarTarefaComponent implements OnInit, OnDestroy{
   
       this.tarefaAtualIndex = this.tarefas.indexOf(tarefaAtual); // Atualiza o índice para a tarefa atual
     } else {
-      console.log('Não há mais tarefas disponíveis para iniciar.');
+      this.toastMessage = 'Não há mais tarefas disponíveis para iniciar.';
+      this.showToast = true;
     }
   }
 
   ngOnInit() {
     this.updateTime();
+  }
+  
+  formatHoraServidor(hora: string): string {
+    return hora.length > 5 ? hora.slice(0, 5) : hora;
   }
 
   ngOnDestroy() {
@@ -183,6 +187,18 @@ export class IniciarTarefaComponent implements OnInit, OnDestroy{
       const currentTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       this.formGroup.get('horaInicio')?.setValue(currentTime);
     }, 1000); // atualiza a cada segundo
-  }
+  } 
   
+  // Função de refresh
+  handleRefresh(event: CustomEvent) {
+    this.buscarMotoristaPorEmail();
+    this.buscarFolha();
+    this.carregarTarefaAtual();
+    
+    setTimeout(() => {
+      // Após carregar os dados, complete o refresher
+      event.detail.complete();
+    }, 2000);
+  } 
+
 }

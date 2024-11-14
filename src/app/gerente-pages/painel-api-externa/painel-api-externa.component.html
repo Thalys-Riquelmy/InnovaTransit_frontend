@@ -11,17 +11,31 @@
   <ion-content class="ion-padding">
     <ion-grid>
       <ion-row>
-        <ion-col size="6" size-sm="3">
+        <ion-col size="6" size-sm="6">
           <ion-item>
-            <ion-input label="Empresa" labelPlacement="floating" value="Metrobus Transporte Coletivo S/A"></ion-input>
+            <ion-label>Empresa</ion-label>
+            <ion-select [(ngModel)]="empresaId" placeholder="Selecione uma empresa" labelPlacement="floating" (ngModelChange)="selecionarEmpresa()">
+              <!-- Iterando sobre a lista de empresas e mostrando apenas o nome -->
+              <ion-select-option *ngFor="let empresa of listaDeEmpresa" [value]="empresa.id">
+                {{ empresa.nome }}
+              </ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
+      
         <ion-col size="6" size-sm="3">
           <ion-item>
-            <ion-input label="CNPJ" labelPlacement="floating" value="02.392.459/0001-03"></ion-input>
+            <ion-input label="CNPJ" labelPlacement="floating" [value]="formatarCNPJ(empresaSelecionada?.cnpj ?? '')"></ion-input>
+          </ion-item>
+        </ion-col>
+      
+        <ion-col size="6" size-sm="3">
+          <ion-item>
+            <ion-input label="URL de busca (Folha-Serviço)" labelPlacement="floating" [value]="empresaSelecionada?.urlBusca"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
+      
 
       <!-- Seletor de frequência usando ion-radio e campos à direita -->
       <ion-row>
@@ -29,22 +43,22 @@
           <ion-list>
             <ion-radio-group [(ngModel)]="frequencia">
               <ion-item>
-                <ion-label>Uma vez</ion-label>
-                <ion-radio slot="start" value="once"></ion-radio>
+                  <ion-label>Busca Manual</ion-label>
+                  <ion-radio slot="start" value="once"></ion-radio>
               </ion-item>
               <ion-item>
-                <ion-label>Diariamente</ion-label>
-                <ion-radio slot="start" value="daily"></ion-radio>
+                  <ion-label>Diariamente</ion-label>
+                  <ion-radio slot="start" value="daily"></ion-radio>
               </ion-item>
               <ion-item>
-                <ion-label>Semanalmente</ion-label>
-                <ion-radio slot="start" value="weekly"></ion-radio>
+                  <ion-label>Semanalmente</ion-label>
+                  <ion-radio slot="start" value="weekly"></ion-radio>
               </ion-item>
               <ion-item>
-                <ion-label>Mensalmente</ion-label>
-                <ion-radio slot="start" value="monthly"></ion-radio>
+                  <ion-label>Mensalmente</ion-label>
+                  <ion-radio slot="start" value="monthly"></ion-radio>
               </ion-item>
-            </ion-radio-group>
+          </ion-radio-group>          
           </ion-list>
         </ion-col>
 
@@ -52,15 +66,9 @@
         <ion-col size="3">
           <ion-row *ngIf="frequencia === 'once'">
             <ion-col size="12">
-              <ion-label style="margin-left: 60px;">Selecione a data e hora</ion-label>
-              <ion-datetime-button datetime="datetimeOnce"></ion-datetime-button>
-              <ion-modal [keepContentsMounted]="true">
-                <ng-template>
-                  <ion-datetime id="datetimeOnce"></ion-datetime>
-                </ng-template>
-              </ion-modal>
+              <ion-button style="margin-top: 80px; margin-left: 80px;" color="primary" (click)="enviarConfiguracao()">Buscar Agora</ion-button>
             </ion-col>
-          </ion-row>
+          </ion-row>          
 
           <ion-row *ngIf="frequencia === 'daily'">
             <ion-col size="12">
@@ -110,10 +118,17 @@
       <!-- Botões Salvar e Cancelar centralizados -->
       <ion-row>
         <ion-col size="12" style="text-align: center; margin-top: 20px;">
-          <ion-button color="primary">Salvar</ion-button>
-          <ion-button color="secondary">Cancelar</ion-button>
+          <ion-button color="primary" (click)="enviarConfiguracao()">Salvar</ion-button>
+          <ion-button color="primary">Cancelar</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-content>
+  <ion-toast
+    [isOpen]="showToast"
+    position="top"
+    [message]="toastMessage"
+    duration="3000"
+    (didDismiss)="showToast = false">
+  </ion-toast>
 </div>

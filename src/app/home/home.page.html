@@ -1,1 +1,27 @@
-<router-outlet>
+<div class="flex">
+    <div class="login-content">
+      <div class="login-container">
+        <h2 class="login-title">InnovaTransit</h2>
+        <p class="login-subtitle">Primeiro acesso no Servidor</p>
+        <ion-item>
+          <ion-input
+            [(ngModel)]="urlServidor"
+            name="urlServidor"
+            label="Insira a URL"
+            labelPlacement="floating"
+            placeholder="Insira a URL contendo o protocolo, IP e porta"
+            required
+          ></ion-input>
+        </ion-item>
+        <ion-toast
+            [isOpen]="showToast"
+            position="top"
+            [message]="toastMessage"
+            duration="3000"
+            (didDismiss)="showToast = false">
+        </ion-toast>
+        <ion-button expand="full" (click)="onSubmit()" class="login-button">Conectar</ion-button>
+      </div>
+    </div>
+  </div>
+  

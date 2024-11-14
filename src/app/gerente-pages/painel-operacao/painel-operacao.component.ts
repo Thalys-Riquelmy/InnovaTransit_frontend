@@ -41,7 +41,7 @@ export class PainelOperacaoComponent implements OnInit, OnDestroy{
     this.selectedSegment = event.detail.value;
   }
 
-  ngOnInit() {
+  /*ngOnInit() {
     const dataAtual = new Date(); // Obtém a data atual
     const dataFormatada = formatDate(dataAtual, 'yyyy-MM-dd', 'en-US'); // Formata a data no formato desejado
     this.folhaServicoService.listarFolhaServicoPorData(dataFormatada).subscribe((data) => {
@@ -54,8 +54,26 @@ export class PainelOperacaoComponent implements OnInit, OnDestroy{
     this.intervalId = setInterval(() => {
       this.currentHour = new Date(); 
     }, 1000);
+  }*/
 
-  }
+    ngOnInit() {
+      // Chama o método após 5 segundos (5000 ms)
+      setTimeout(() => {
+        const dataAtual = new Date(); // Obtém a data atual
+        const dataFormatada = formatDate(dataAtual, 'yyyy-MM-dd', 'en-US'); // Formata a data no formato desejado
+        this.folhaServicoService.listarFolhaServicoPorData(dataFormatada).subscribe((data) => {
+          this.listaFolhaServico = data;
+          this.listarTarefasComHoraInicio();
+          this.listarTarefasIniciar();
+          this.listarTarefasFinalizadas();
+        });
+      }, 1000); // 5000 ms = 5 segundos
+  
+      // Intervalo para atualizar a hora atual a cada 1 segundo
+      this.intervalId = setInterval(() => {
+        this.currentHour = new Date();
+      }, 1000);
+    }
 
   listarTarefasComHoraInicio() {
     this.tarefasComHoraInicio = []; // Limpa a lista antes de preencher

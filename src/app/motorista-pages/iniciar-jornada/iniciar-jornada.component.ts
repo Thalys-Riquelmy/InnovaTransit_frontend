@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonFab, IonFabButton, IonToast } from "@ionic/angular/standalone";
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonFab, IonFabButton, IonToast, IonRefresher, IonRefresherContent } from "@ionic/angular/standalone";
 import { MotoristaService } from 'src/app/services/motorista-service/motorista.service';
 import { Motorista } from 'src/app/models/motorista';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
@@ -13,7 +13,7 @@ import { FolhaServico } from 'src/app/models/folha-servico';
   selector: 'app-iniciar-jornada',
   templateUrl: './iniciar-jornada.component.html',
   styleUrls: ['./iniciar-jornada.component.scss'],
-  imports: [IonToast, IonFabButton, IonFab, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+  imports: [IonRefresherContent, IonRefresher, IonToast, IonFabButton, IonFab, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
     IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
   ],
   standalone: true
@@ -135,31 +135,7 @@ export class IniciarJornadaComponent {
     } else {
       console.error('ID da folha de serviço não encontrado.');
     }
-  }
-
-  /*async iniciarJornada() {
-    const agora = new Date();
-    const horas = agora.toTimeString().split(' ')[0]; // Extrai a hora no formato 'HH:mm:ss'
-    this.formGroup.get('horaInicial')?.patchValue(horas);
-    console.log(horas);
-
-    // Verifica se a folha de serviço está preenchida
-    if (this.formGroup.value.id) {
-        try {
-          // Espera a resposta do método iniciarFolhaDeServico
-          const response = await (await this.folhaServicoService.iniciarFolhaDeServico(this.formGroup.value.id, horas)).toPromise();
-          
-          this.toastMessage = 'Jornada iniciada com sucesso!';
-          this.showToast = true;
-          this.router.navigate(['/motorista/iniciar-tarefa']);
-        } catch (error: any) { // Especifica o tipo como 'any' ou você pode criar um tipo mais específico
-            console.error('Erro ao iniciar folha de serviço', error);
-        }
-    } else {
-        console.error('ID da folha de serviço não encontrado.');
-    }
-  }*/
-  
+  }  
 
   finalizarJornada() {
     const agora = new Date();
@@ -183,4 +159,21 @@ export class IniciarJornadaComponent {
     }
   }  
 
+  /*handleRefresh(event: CustomEvent) {
+    setTimeout(() => {
+      // Qualquer chamada de carregamento de dados pode ser colocada aqui
+      event.detail.complete();  // Completa a ação de refresh
+    }, 2000);
+  }*/  
+
+  // Função de refresh
+  handleRefresh(event: CustomEvent) {
+    this.buscarMotoristaPorEmail(); // Recarregar dados do motorista
+    this.buscarFolha(); // Recarregar a folha de serviço
+    
+    setTimeout(() => {
+      // Após carregar os dados, complete o refresher
+      event.detail.complete();
+    }, 2000);
+  }  
 }

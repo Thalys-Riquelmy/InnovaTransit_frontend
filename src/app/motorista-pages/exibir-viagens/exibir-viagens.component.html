@@ -9,6 +9,9 @@
   </ion-header>
 
   <ion-content class="ion-padding">
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
     <form [formGroup]="formGroup">
     <ion-grid>
       <ion-row>
@@ -16,10 +19,10 @@
           <ion-input label="Veiculo:" formControlName="numeroVeiculo" [readonly]="true"></ion-input>
         </ion-item></ion-col>
         <ion-col size="6" size-sm="3"><ion-item>
-          <ion-input label="Hora Início:" formControlName="horaInicial" [readonly]="true"></ion-input>
+          <ion-input label="Hr. Início:" formControlName="horaInicial" [readonly]="true"></ion-input>
         </ion-item></ion-col>
         <ion-col size="6" size-sm="3"><ion-item>
-          <ion-input label="Hora Final:" formControlName="horaFinal" [readonly]="true"></ion-input>
+          <ion-input label="Hr. Final:" formControlName="horaFinal" [readonly]="true"></ion-input>
         </ion-item></ion-col>
         <ion-col size="6" size-sm="3"><ion-item>
           <ion-input label="Mat.:" formControlName="matricula" [readonly]="true"></ion-input>

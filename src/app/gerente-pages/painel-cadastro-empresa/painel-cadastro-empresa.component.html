@@ -1,0 +1,39 @@
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Innova Transit</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="6" size-sm="4">
+          <ion-item>
+            <ion-input label="Empresa" labelPlacement="floating" placeholder="Nome da Empresa"
+                       [(ngModel)]="nomeEmpresa"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" size-sm="4">
+          <ion-item>
+            <ion-input label="CNPJ" labelPlacement="floating" placeholder="CNPJ da Empresa"
+                       [(ngModel)]="cnpjEmpresa"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="12">
+          <ion-button style="margin-top: 80px; margin-left: 40%;" color="primary" (click)="cadastrarEmpresa()">Cadastrar Empresa</ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-content>
+  <ion-toast
+    [isOpen]="showToast"
+    position="top"
+    [message]="toastMessage"
+    duration="3000"
+    (didDismiss)="showToast = false">
+  </ion-toast>
+</div>

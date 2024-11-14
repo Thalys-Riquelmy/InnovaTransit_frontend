@@ -18,11 +18,49 @@ export class StorageService {
         upgrade(db) {
           db.createObjectStore('tarefas', { keyPath: 'id' });
           db.createObjectStore('folhasServico', { keyPath: 'id' }); // Cria o objeto para FolhaServico
+
+          // Criação do object store 'servidor' com a URL do servidor
+          if (!db.objectStoreNames.contains('servidor')) {
+            db.createObjectStore('servidor', { keyPath: 'id', autoIncrement: true });
+          }
         },
     });
   }
 
-    // MÉTODOS RELACIONADOS A TAREFAS //
+  // MÉTODOS RELACIONADOS AO SERVIDOR //
+
+  // Salvar a URL do servidor
+  async saveServidor(url_servidor: string): Promise<void> {
+    const db = await this.dbPromise;
+    const existingServidor = await db.getAll('servidor');// Se houver algum registro, exclua-o
+    if (existingServidor && existingServidor.length > 0) {
+      await db.clear('servidor');  // Limpa todos os registros do object store 'servidor'
+    }
+    const servidor = { url_servidor };
+    await db.put('servidor', servidor);
+  }  
+
+  // Obter a URL do servidor
+  async getServidor(): Promise<{ url_servidor: string } | null> {
+    const db = await this.dbPromise;
+    const servidor = await db.getAll('servidor');
+  
+    if (servidor && servidor.length > 0) {
+      return servidor[0]; // Retorna o primeiro registro encontrado
+    } else {
+      return null; // Nenhuma URL salva
+    }
+  }
+  
+
+  // Verificar se a URL do servidor já está salva
+  async isServidorSaved(url_servidor: string): Promise<boolean> {
+    const db = await this.dbPromise;
+    const servidor = await db.getFromIndex('servidor', 'url_servidor', url_servidor);
+    return servidor !== undefined;
+  }
+
+  // MÉTODOS RELACIONADOS A TAREFAS //
 
   // Método para salvar uma tarefa
   async saveTarefa(tarefa: Tarefa): Promise<void> {

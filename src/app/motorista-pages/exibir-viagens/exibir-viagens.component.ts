@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonLabel } from "@ionic/angular/standalone";
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonLabel, IonRefresherContent, IonRefresher } from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { Tarefa } from 'src/app/models/tarefa';
@@ -17,7 +17,7 @@ import 'jspdf-autotable';
   selector: 'app-exibir-viagens',
   templateUrl: './exibir-viagens.component.html',
   styleUrls: ['./exibir-viagens.component.scss'],
-  imports: [IonLabel, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+  imports: [IonRefresher, IonRefresherContent, IonLabel, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
     IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
   ],
   standalone: true
@@ -211,5 +211,14 @@ export class ExibirViagensComponent {
     // Salvar PDF
     doc.save('Folha_Serviço.pdf');
   }
+
+  handleRefresh(event: CustomEvent) {
+    this.buscarMotoristaPorEmail();
+    this.buscarFolha();
+    setTimeout(() => {
+      // Qualquer chamada de carregamento de dados pode ser colocada aqui
+      event.detail.complete();  // Completa a ação de refresh
+    }, 2000);
+  }  
   
 }

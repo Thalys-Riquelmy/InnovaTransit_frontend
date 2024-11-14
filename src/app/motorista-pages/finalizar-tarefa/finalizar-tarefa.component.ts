@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
-import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast, IonAlert, IonModal } from "@ionic/angular/standalone";
+import { IonHeader, IonTitle, IonMenu, IonToolbar, IonContent, IonButtons, IonMenuButton, IonIcon, IonButton, IonItem, IonList, IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, IonCol, IonRow, IonInput, IonRouterLink, IonApp, IonToast, IonAlert, IonModal, IonRefresherContent, IonRefresher } from "@ionic/angular/standalone";
 import { FolhaServico } from 'src/app/models/folha-servico';
 import { Motorista } from 'src/app/models/motorista';
 import { FolhaServicoService } from 'src/app/services/folha-servico-service/folha-servico.service';
@@ -15,7 +15,7 @@ import { TarefaService } from 'src/app/services/tarefa-service/tarefa.service';
   selector: 'app-finalizar-tarefa',
   templateUrl: './finalizar-tarefa.component.html',
   styleUrls: ['./finalizar-tarefa.component.scss'],
-  imports: [IonModal, IonAlert, IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
+  imports: [IonRefresher, IonRefresherContent, IonModal, IonAlert, IonToast, IonApp, IonRouterLink, IonInput, IonRow, IonCol, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonList, IonItem, IonButton, IonIcon, 
     IonHeader, IonTitle, IonMenu, IonContent, IonToolbar, IonButtons, IonMenuButton, ReactiveFormsModule, RouterLink, CommonModule, RouterOutlet
   ],
   standalone: true
@@ -153,6 +153,8 @@ export class FinalizarTarefaComponent implements OnInit, OnDestroy{
       });
     } else {
       console.log('Nenhuma tarefa com horaInicio preenchida e horaFim vazia foi encontrada.');
+      this.toastMessage = 'Nenhuma tarefa foi inicializada.';
+      this.showToast = true;
     }
   }
 
@@ -276,4 +278,14 @@ export class FinalizarTarefaComponent implements OnInit, OnDestroy{
       this.formGroup.get('horaFim')?.setValue(currentTime);
     }, 1000); // atualiza a cada segundo
   }
+
+  handleRefresh(event: CustomEvent) {
+    this.buscarMotoristaPorEmail();
+    this.buscarFolha();
+    this.carregarTarefaAtual();
+    setTimeout(() => {
+      // Qualquer chamada de carregamento de dados pode ser colocada aqui
+      event.detail.complete();  // Completa a ação de refresh
+    }, 2000);
+  }  
 }

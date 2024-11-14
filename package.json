@@ -32,6 +32,7 @@
     "@ionic/angular": "^8.0.0",
     "@ionic/storage": "^4.0.0",
     "@ionic/storage-angular": "^4.0.0",
+    "@maskito/core": "^3.2.0",
     "bootstrap": "^5.3.3",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.2",
@@ -41,6 +42,7 @@
     "jspdf-autotable": "^3.8.4",
     "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
+    "ngx-mask": "^18.0.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
