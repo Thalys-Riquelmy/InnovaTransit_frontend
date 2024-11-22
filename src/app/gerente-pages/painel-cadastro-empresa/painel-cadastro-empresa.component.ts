@@ -17,6 +17,9 @@ import { EmpresaService } from 'src/app/services/empresa-service/empresa.service
 export class PainelCadastroEmpresaComponent{
   nomeEmpresa: string = '';
   cnpjEmpresa: string = '';
+  urlBusca: string = '';
+  apiKey: string = '';
+
   //Mensagens
   showToast = false; // Variável para controlar o Toast
   toastMessage = ''; // Variável para a mensagem do Toast
@@ -27,8 +30,8 @@ export class PainelCadastroEmpresaComponent{
     const novaEmpresa: Empresa = {
       nome: this.nomeEmpresa,
       cnpj: this.cnpjEmpresa,
-      urlBusca: "",  // Ou algum valor padrão
-      apiKey: ""     // Ou algum valor padrão
+      urlBusca: this.urlBusca,  // Ou algum valor padrão
+      apiKey: this.apiKey     // Ou algum valor padrão
     };
     
 

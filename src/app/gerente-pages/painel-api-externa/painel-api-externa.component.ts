@@ -17,15 +17,23 @@ import { EmpresaService } from 'src/app/services/empresa-service/empresa.service
   standalone: true,
 })
 export class PainelApiExternaComponent implements OnInit{
-  empresaId: number = 0;
-  frequencia: string = 'once'; // Valor padrão
-  horaDiaria: string = "";
-  diaSemana: string = ""; // Pode ser "monday", "tuesday", etc.
-  diaMes: number = 0;
 
+  idEmpresa: number = 0;
+  tipoAutomacao: string = '';
+  hora: string = '';
+  minuto: string = '';
+  diaSemana: string = '';
+  diaMes: string = '';
+  message = '';
+
+  // Propriedades para mensagem de sucesso ou erro
+  public mensagem: string = '';
+  public status: string = '';
+  
   //Injeções
   empresaService = inject (EmpresaService);
-
+  configuracaoService = inject (ConfiguracaoService);
+  
   //Lista de Empresas
   empresaSelecionada: Empresa | undefined;
   listaDeEmpresa: Empresa [] = [];
@@ -34,114 +42,9 @@ export class PainelApiExternaComponent implements OnInit{
   showToast = false; // Variável para controlar o Toast
   toastMessage = ''; // Variável para a mensagem do Toast
 
-  constructor(private configuracaoService: ConfiguracaoService) {}
   ngOnInit(): void {
     this.listarEmpresas();
     //throw new Error('Method not implemented.');
-  }
-
-  enviarConfiguracao() {
-    if (!this.frequencia) {
-      console.error('Frequência não fornecida');
-      return;
-    }
-  
-    let dateTime: string | null = null;
-  
-    try {
-      switch (this.frequencia) {
-        case 'once':
-          // Agendamento para o momento atual
-          dateTime = new Date().toISOString();
-          break;
-  
-        case 'daily':
-          if (this.horaDiaria) {
-            const [hours, minutes] = this.horaDiaria.split(':').map(Number);
-            if (!isNaN(hours) && !isNaN(minutes)) {
-              const today = new Date();
-              today.setUTCHours(hours, minutes, 0, 0);
-              dateTime = today.toISOString();
-            } else {
-              throw new Error('Hora diária inválida. Certifique-se de que o formato seja HH:mm.');
-            }
-          } else {
-            throw new Error('Hora diária não fornecida.');
-          }
-          break;
-  
-        case 'weekly':
-          if (this.diaSemana && this.horaDiaria) {
-            const [hours, minutes] = this.horaDiaria.split(':').map(Number);
-            if (!isNaN(hours) && !isNaN(minutes)) {
-              const today = new Date();
-              today.setUTCHours(hours, minutes, 0, 0);
-  
-              const diasSemana: { [key: string]: number } = {
-                monday: 1, tuesday: 2, wednesday: 3, thursday: 4,
-                friday: 5, saturday: 6, sunday: 0
-              };
-              const diaSemanaNumber = diasSemana[this.diaSemana];
-              if (diaSemanaNumber === undefined) {
-                throw new Error('Dia da semana inválido.');
-              }
-  
-              // Calculando o próximo dia da semana desejado
-              const diffDays = (diaSemanaNumber + 7 - today.getUTCDay()) % 7;
-              today.setUTCDate(today.getUTCDate() + diffDays);
-              dateTime = today.toISOString();
-            } else {
-              throw new Error('Hora diária inválida.');
-            }
-          } else {
-            throw new Error('Dia da semana ou hora diária não fornecidos.');
-          }
-          break;
-  
-        case 'monthly':
-          if (this.diaMes && this.horaDiaria) {
-            const [hours, minutes] = this.horaDiaria.split(':').map(Number);
-            if (!isNaN(hours) && !isNaN(minutes) && this.diaMes > 0 && this.diaMes <= 31) {
-              const today = new Date();
-              today.setUTCDate(this.diaMes);
-              today.setUTCHours(hours, minutes, 0, 0);
-              dateTime = today.toISOString();
-            } else {
-              throw new Error('Dia do mês ou hora diária inválida.');
-            }
-          } else {
-            throw new Error('Dia do mês ou hora diária não fornecidos.');
-          }
-          break;
-  
-        default:
-          throw new Error('Frequência inválida.');
-      }
-  
-      if (!dateTime) {
-        throw new Error('Erro ao definir a data e hora para o agendamento.');
-      }
-  
-      const requestBody = { 
-        empresaId: this.empresaId,
-        dateTime: dateTime,
-        frequency: this.frequencia
-      };
-  
-      this.configuracaoService.enviarConfiguracao(requestBody).subscribe(
-        response => {
-          this.toastMessage = 'Configuração enviada com sucesso!';
-          this.showToast = true;
-        },
-        error => {
-          this.toastMessage = 'Erro ao enviar configuração!';
-          this.showToast = true;
-        }
-      );
-  
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   listarEmpresas(){
@@ -157,7 +60,7 @@ export class PainelApiExternaComponent implements OnInit{
 
   selecionarEmpresa() {
     // Buscar a empresa com o id selecionado
-    this.empresaSelecionada = this.listaDeEmpresa.find(empresa => empresa.id === this.empresaId);
+    this.empresaSelecionada = this.listaDeEmpresa.find(empresa => empresa.id === this.idEmpresa);
   }
 
   formatarCNPJ(cnpj: string): string {
@@ -174,5 +77,40 @@ export class PainelApiExternaComponent implements OnInit{
     }
     return cnpj; // Retorna o CNPJ sem formatação se não tiver 14 dígitos
   }
-  
+
+  // Função chamada ao submeter o formulário
+  configurarAutomacao() {
+    console.log(this.idEmpresa, this.tipoAutomacao, this.hora, this.minuto, this.diaSemana, this.diaMes);
+    //return;
+    this.configuracaoService.configurarAutomacao(this.idEmpresa, this.tipoAutomacao, this.hora, this.minuto, this.diaSemana, this.diaMes)
+      .subscribe(
+        (response) => {
+          console.log('Automação configurada com sucesso:', response);
+          
+          this.toastMessage = response.message;
+          this.showToast = true;
+        },
+        (error) => {
+          console.error('Erro ao configurar a automação:', error); // Exibe o erro no console
+        }
+      );
+  }
+
+  // Método para chamar o serviço e atualizar os dados
+  atualizarDados(idEmpresa: number) {
+    this.configuracaoService.atualizarDados(idEmpresa).subscribe(
+      response => {
+        // Se a chamada for bem-sucedida
+        //this.status = 'success';
+        //this.mensagem = response.message;
+        this.toastMessage = response.message;
+        this.showToast = true;
+      },
+      error => {
+        // Se ocorrer algum erro na chamada
+        this.status = 'error';
+        this.mensagem = 'Erro ao atualizar os dados: ' + error.message;
+      }
+    );
+  }
 }
